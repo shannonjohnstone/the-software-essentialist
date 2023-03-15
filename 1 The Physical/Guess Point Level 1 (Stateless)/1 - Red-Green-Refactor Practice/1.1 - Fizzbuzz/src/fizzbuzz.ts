@@ -1,1 +1,3 @@
-export function fizzbuzz() { }
+export function fizzbuzz() {
+  return "fizzbuzz"
+}
