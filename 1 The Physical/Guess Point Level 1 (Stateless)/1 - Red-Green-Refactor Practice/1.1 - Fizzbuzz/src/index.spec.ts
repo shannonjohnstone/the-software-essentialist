@@ -1,5 +1,2 @@
 
-describe("fizzbuzz", () => {
-
-
-});
+describe("fizzbuzz", () => { });
