@@ -1,6 +1,21 @@
+class TextValidation {
+  static hasUpperCase(password: string) {
+    return /[A-Z]/.test(password)
+  }
+  static hasDigit(password: string) {
+    return /d/.test(password)
+  }
+  static hasLength(password: string, min: number, max: number) {
+    return password.length >= min && password.length <= max
+  }
+}
+
 export class Password {
   static validate(password: string) {
-    const passwordRegex = /(?=[A-Za-z0-9]{5,15}$)(?=.*[A-Z])(?=.*[0-9]).*$/g;
-    return passwordRegex.test(password)
+    return (
+      TextValidation.hasDigit(password) &&
+      TextValidation.hasUpperCase(password) &&
+      TextValidation.hasLength(password, 5, 15)
+    );
   }
 }
