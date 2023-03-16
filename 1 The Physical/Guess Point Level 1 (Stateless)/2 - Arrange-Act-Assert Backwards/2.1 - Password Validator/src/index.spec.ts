@@ -1,4 +1,4 @@
-import { passwordValidator } from "./index"
+import { Password } from "./index"
 describe('password validator', () => {
   describe("Given the password validator is provided a password", () => {
     const lengthTestCases: [string, boolean][] = [
@@ -7,7 +7,7 @@ describe('password validator', () => {
       ["Password1", true]
     ]
     it.each(lengthTestCases)("Then it should be between 5 and 15 characters %s", (password, expected) => {
-      expect(passwordValidator(password)).toEqual(expected)
+      expect(Password.validate(password)).toEqual(expected)
     })
   })
   describe("Given the password validator is provided a password", () => {
@@ -17,7 +17,7 @@ describe('password validator', () => {
       ["Password1", true]
     ]
     it.each(formatTestCases)("Then it should contain at least 1 digit and 1 uppercase character %s", (password, expected) => {
-      expect(passwordValidator(password)).toEqual(expected)
+      expect(Password.validate(password)).toEqual(expected)
     })
   })
 })
