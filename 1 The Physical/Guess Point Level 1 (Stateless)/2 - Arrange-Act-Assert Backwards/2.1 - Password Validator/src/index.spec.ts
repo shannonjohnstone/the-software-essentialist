@@ -4,9 +4,9 @@ describe('password validator', () => {
     const lengthTestCases: [string, boolean][] = [
       ["s", false],
       ["passwordistoomanycharacterssorry", false],
-      ["password", true]
+      ["Password1", true]
     ]
-    it.each(lengthTestCases)("Then it should be between 5 and 15 characters", (password, expected) => {
+    it.each(lengthTestCases)("Then it should be between 5 and 15 characters %s", (password, expected) => {
       expect(passwordValidator(password)).toEqual(expected)
     })
   })
@@ -14,9 +14,9 @@ describe('password validator', () => {
     const formatTestCases: [string, boolean][] = [
       ["s", false],
       ["1", false],
-      ["1S", true]
+      ["Password1", true]
     ]
-    it.each(formatTestCases)("Then it should contain at least 1 digit and 1 uppercase character", (password, expected) => {
+    it.each(formatTestCases)("Then it should contain at least 1 digit and 1 uppercase character %s", (password, expected) => {
       expect(passwordValidator(password)).toEqual(expected)
     })
   })
