@@ -1,20 +1,37 @@
-interface Error {
+export interface Error {
   type: string
   message: string
 }
+
+export interface ErrorEngineItem {
+  valid: boolean
+  error: Partial<Error>
+}
+
+export interface ErrorEngineResponse {
+  valid: boolean, errors: Partial<Error>[]
+}
+
+export enum ERROR_TYPES {
+  INVALID_FORMAT = "INVALID_FORMAT",
+  INVALID_LENGTH = "INVALID_LENGTH"
+}
+
 export class ErrorEngine {
-  static create(isValid: boolean, error: Error) {
+  static create(isValid: boolean, error: Error): ErrorEngineItem {
     if (isValid) return { valid: true, error: {} }
 
     return { valid: false, error }
   }
 
-  static run(errors: { valid: boolean, error: Partial<Error> }[]) {
-    return errors.reduce((acc: { valid: boolean, errors: Partial<Error>[] }, item: { valid: boolean, error: Partial<Error> }) => {
+  static run(errors: ErrorEngineItem[]): ErrorEngineResponse {
+    const reduceErrors = (acc: ErrorEngineResponse, item: ErrorEngineItem) => {
       if (!item.valid) {
         return { ...acc, valid: false, errors: [...acc.errors, item?.error] }
       }
       return acc
-    }, { valid: true, errors: [] })
+    }
+
+    return errors.reduce(reduceErrors, { valid: true, errors: [] })
   }
 }
