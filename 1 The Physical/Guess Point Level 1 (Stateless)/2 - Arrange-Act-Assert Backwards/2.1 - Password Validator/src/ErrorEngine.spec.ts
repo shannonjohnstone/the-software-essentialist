@@ -14,4 +14,22 @@ describe("ErrorEngine", () => {
       expect(ErrorEngine.create(false, { type: ERROR_TYPE, message: "Sorry there is an error" })).toEqual({ valid: false, error: { type: ERROR_TYPE, message: "Sorry there is an error" } })
     })
   })
+
+  describe("Given the ErrorEngine is ran with no errors", () => {
+    it("Then return a flatten error response", () => {
+      expect(ErrorEngine.run([
+        { valid: true, error: { type: ERROR_TYPE, message: "Sorry there is an error" } },
+        { valid: true, error: { type: ERROR_TYPE, message: "Sorry there is an error" } }
+      ])).toEqual({ valid: true, errors: [] })
+    })
+  })
+
+  describe("Given the ErrorEngine is ran with multiple errors", () => {
+    it("Then return a flatten error response", () => {
+      expect(ErrorEngine.run([
+        { valid: false, error: { type: ERROR_TYPE, message: "Sorry there is an error" } },
+        { valid: false, error: { type: ERROR_TYPE, message: "Sorry there is a second error" } }
+      ])).toEqual({ valid: false, errors: [{ type: ERROR_TYPE, message: "Sorry there is an error" }, { type: ERROR_TYPE, message: "Sorry there is a second error" }] })
+    })
+  })
 })
