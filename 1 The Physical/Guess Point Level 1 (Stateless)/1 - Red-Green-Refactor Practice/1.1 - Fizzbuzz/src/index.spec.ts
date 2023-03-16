@@ -7,7 +7,7 @@ describe("Fizzbuzz", () => {
   ]
 
   describe.each(testCases)("Given the fizzbuzz function is provided %s", (numbers, expected) => {
-    it(`Should return cake ${expected}`, () => {
+    it(`Should return ${expected}`, () => {
       expect(fizzbuzz(numbers)).toEqual(expected)
     })
   })

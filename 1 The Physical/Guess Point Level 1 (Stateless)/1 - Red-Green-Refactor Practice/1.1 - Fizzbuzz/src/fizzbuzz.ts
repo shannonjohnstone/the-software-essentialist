@@ -1,8 +1,13 @@
+const divisibleBy = (divisible: number) => (number: number) => number % divisible === 0
+
+const divisibleBy3 = divisibleBy(3)
+const divisibleBy5 = divisibleBy(5)
+
 export function fizzbuzz(numbers: number[]) {
   return numbers.reduce((acc: string, number: number) => {
-    if (number % 3 === 0 && number % 5 === 0) return acc += "FizzBuzz";
-    if (number % 3 === 0) return acc += "Fizz";
-    if (number % 5 === 0) return acc += "Buzz";
+    if (divisibleBy3(number) && divisibleBy5(number)) return acc += "FizzBuzz";
+    if (divisibleBy3(number)) return acc += "Fizz";
+    if (divisibleBy5(number)) return acc += "Buzz";
     return acc += number
   }, "")
 }
