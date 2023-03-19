@@ -1,5 +1,7 @@
+import { TimeValidator } from "./index"
 
-describe('military time validator', () => {
-
-
+describe('TimeValidator', () => {
+  it("Should be truthy", () => {
+    expect(TimeValidator.is24HourTime()).toEqual(true)
+  })
 })
