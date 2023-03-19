@@ -11,4 +11,17 @@ describe('stats calculator', () => {
       expect(statsMethod(numbers)).toEqual(expected)
     })
   })
+
+  describe('Given the calculate function is invoked with a valid sequence of numbers', () => {
+    it("Should return the calculated values", () => {
+      const result = StatsCalculator.calculate([2, 4, 21, -8, 53, 40])
+
+      expect(result).toEqual({
+        "average": 18.666666666666668,
+        "elementsCount": 6,
+        "maximum": 53,
+        "minimum": -8,
+      })
+    })
+  })
 })

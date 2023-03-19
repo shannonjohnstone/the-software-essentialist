@@ -1,4 +1,12 @@
 export class StatsCalculator {
+  static calculate(sequence: number[]) {
+    return {
+      minimum: StatsCalculator.minimum(sequence),
+      maximum: StatsCalculator.maximum(sequence),
+      elementsCount: StatsCalculator.elementsCount(sequence),
+      average: StatsCalculator.average(sequence),
+    }
+  }
   static minimum(stats: number[]): number {
     return stats.reduce((min, num) => num < min ? num : min, stats[0])
   }
