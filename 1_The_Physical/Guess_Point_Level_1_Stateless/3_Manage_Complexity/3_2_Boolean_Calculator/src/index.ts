@@ -18,15 +18,10 @@ export class BooleanCalculator {
   };
 
   private static resolveExpression(stack: unknown[]): unknown[] {
-    const operand1 = stack.pop();
-    const condition = stack.pop();
-    const operand2 = stack.pop();
+    const [operand1, condition, operand2, ...rest] = [...stack].reverse();
+    const result = (condition === ExpressionsToken.AND) ? operand1 === operand2 : operand2 || operand1;
 
-    const result = (condition === "AND") ? operand1 === operand2 : operand2 || operand1;
-
-    stack.push(result);
-
-    return stack
+    return [...rest.reverse(), result]
   }
 
   static evaluate(expression: string): boolean {
@@ -48,16 +43,14 @@ export class BooleanCalculator {
         const precedenceValue = stack[stack.length - 2] as unknown as Precedence;
 
         while (stack.length > 1 && BooleanCalculator.precedence[precedenceValue] >= BooleanCalculator.precedence[token]) {
-          const newStack = BooleanCalculator.resolveExpression([...stack])
-          stack = newStack
+          stack = BooleanCalculator.resolveExpression([...stack])
         }
         stack.push(token);
       } else if (token === ExpressionsToken.OPEN) {
         stack.push(ExpressionsToken.OPEN);
       } else if (token === ExpressionsToken.CLOSE) {
         while (stack.length > 1 && stack[stack.length - 2] !== ExpressionsToken.OPEN) {
-          const newStack = BooleanCalculator.resolveExpression([...stack])
-          stack = newStack
+          stack = BooleanCalculator.resolveExpression([...stack])
         }
       }
     }
@@ -68,6 +61,7 @@ export class BooleanCalculator {
       const newStack = BooleanCalculator.resolveExpression([...stack])
       stack = newStack
     }
+
     return stack.pop();
   }
 }
