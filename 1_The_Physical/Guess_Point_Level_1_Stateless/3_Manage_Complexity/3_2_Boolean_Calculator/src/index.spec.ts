@@ -1,4 +1,4 @@
-import { BooleanCalculator, CalculatorValues } from "./index"
+import { BooleanCalculator } from "./index"
 
 describe('BooleanCalculator', () => {
   const singelBooleanUseCases: [string, boolean][] = [["TRUE", true], ["FALSE", false]];

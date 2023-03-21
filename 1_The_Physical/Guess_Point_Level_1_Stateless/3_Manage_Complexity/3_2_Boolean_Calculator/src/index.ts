@@ -1,5 +1,15 @@
 type Precedence = "NOT" | "AND" | "OR"
 
+enum ExpressionsToken {
+  TRUE = "TRUE",
+  FALSE = "FALSE",
+  NOT = "NOT",
+  AND = "AND",
+  OR = "OR",
+  OPEN = "(",
+  CLOSE = ")",
+}
+
 export class BooleanCalculator {
   private static precedence = {
     "NOT": 3,
@@ -27,14 +37,14 @@ export class BooleanCalculator {
     for (let i = 0; i < tokens.length; i++) {
       const token = tokens[i];
 
-      if (token === "TRUE") {
+      if (token === ExpressionsToken.TRUE) {
         stack.push(true);
-      } else if (token === "FALSE") {
+      } else if (token === ExpressionsToken.FALSE) {
         stack.push(false);
-      } else if (token === "NOT") {
+      } else if (token === ExpressionsToken.NOT) {
         const operand = stack.pop();
         stack.push(!!operand);
-      } else if (token === "AND" || token === "OR") {
+      } else if (token === ExpressionsToken.AND || token === ExpressionsToken.OR) {
         const precedenceValue = stack[stack.length - 2] as unknown as Precedence;
 
         while (stack.length > 1 && BooleanCalculator.precedence[precedenceValue] >= BooleanCalculator.precedence[token]) {
@@ -42,17 +52,17 @@ export class BooleanCalculator {
           stack = newStack
         }
         stack.push(token);
-      } else if (token === "(") {
-        stack.push("(");
-      } else if (token === ")") {
-        while (stack.length > 1 && stack[stack.length - 2] !== "(") {
+      } else if (token === ExpressionsToken.OPEN) {
+        stack.push(ExpressionsToken.OPEN);
+      } else if (token === ExpressionsToken.CLOSE) {
+        while (stack.length > 1 && stack[stack.length - 2] !== ExpressionsToken.OPEN) {
           const newStack = BooleanCalculator.resolveExpression([...stack])
           stack = newStack
         }
       }
     }
 
-    stack = stack.filter(item => item !== "(" && item !== ")").reverse()
+    stack = stack.filter(item => item !== ExpressionsToken.OPEN && item !== ExpressionsToken.CLOSE).reverse()
 
     while (stack.length > 1) {
       const newStack = BooleanCalculator.resolveExpression([...stack])
