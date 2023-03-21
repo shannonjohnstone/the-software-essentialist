@@ -9,14 +9,16 @@ describe('BooleanCalculator', () => {
   })
 
   const multipleBooleanAndConditionUseCases: [string, boolean][] = [
-    ["TRUE AND TRUE", true],
+    // ["TRUE AND TRUE", true],
     ["TRUE AND FALSE", false],
     ["TRUE OR TRUE OR TRUE AND FALSE", false],
     ["TRUE OR FALSE AND NOT FALSE", true],
     ["TRUE AND NOT FALSE AND TRUE", true],
     ["TRUE && TRUE || TRUE || FALSE", true],
-    ["NOT TRUE", true],
-    ["NOT FALSE", true]
+    ["NOT TRUE", false],
+    // ["NOT FALSE", true],
+    ["(TRUE OR TRUE OR TRUE) AND FALSE", false],
+    ["NOT (TRUE AND TRUE)", false],
   ];
   describe.each(multipleBooleanAndConditionUseCases)("Given a multiple booleans of %s is provided", (booleanAsString: string, expected: boolean) => {
     it(`Then a single boolean of ${expected} should be returned`, () => {

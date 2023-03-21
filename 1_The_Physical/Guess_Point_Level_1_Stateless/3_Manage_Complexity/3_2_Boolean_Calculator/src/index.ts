@@ -2,29 +2,14 @@ export type CalculatorValues = "TRUE" | "FALSE";
 // export type Conditions = "AND";
 type Precedence = "NOT" | "AND" | "OR"
 export class BooleanCalculator {
-  private static valuesMap: { [key: string]: boolean } = {
-    true: true,
-    false: false,
-  }
-
   private static precedence = {
     "NOT": 3,
     "AND": 2,
     "OR": 1
   };
 
-  private static conditionsMap: { [key: string]: (a: boolean, b: boolean | undefined) => boolean } = {
-    and: (a, b = false) => a && b,
-    or: (a, b = false) => a || b,
-    not: (a, b) => !a
-  }
-
-  private static encodeExpressionKeys(expression: string): string[] {
-    return expression.split(" ").map((item = "") => item.trim().toLowerCase());
-  }
-
   static evaluate(expression: string) {
-    const tokens = expression.split(" ");
+    const tokens = expression.split(/(\(|\)|NOT|AND|OR|\s+)/).filter(token => token.trim().length > 0);
     let stack: any[] = [];
 
     for (let i = 0; i < tokens.length; i++) {
@@ -36,7 +21,7 @@ export class BooleanCalculator {
         stack.push(false);
       } else if (token === "NOT") {
         const operand = stack.pop();
-        stack.push(!operand);
+        stack.push(!!operand);
       } else if (token === "AND" || token === "OR") {
         const precedenceValue = stack[stack.length - 2] as unknown as Precedence;
 
@@ -48,10 +33,23 @@ export class BooleanCalculator {
           stack.push(result);
         }
         stack.push(token);
+      } else if (token === "(") {
+        stack.push("(");
+      } else if (token === ")") {
+        while (stack.length > 1 && stack[stack.length - 2] !== "(") {
+          const operand2 = stack.pop();
+          const condition = stack.pop();
+          const operand3 = stack.pop();
+          const result = (condition === "AND") ? operand2 === operand3 : operand3 || operand2;
+
+          stack.push(result);
+        }
+        // stack.pop(); // pop the "(" symbol
       }
     }
 
-    stack = stack.reverse();
+    stack = stack.filter(item => item !== "(" && item !== ")").reverse()
+
     while (stack.length > 1) {
       const operand2 = stack.pop();
       const condition = stack.pop();
