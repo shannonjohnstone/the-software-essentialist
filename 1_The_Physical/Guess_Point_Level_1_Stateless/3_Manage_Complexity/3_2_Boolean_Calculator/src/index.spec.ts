@@ -16,7 +16,6 @@ describe('BooleanCalculator', () => {
     ["TRUE AND NOT FALSE AND TRUE", true],
     ["TRUE && TRUE || TRUE || FALSE", true],
     ["NOT TRUE", false],
-    // ["NOT FALSE", true],
     ["(TRUE OR TRUE OR TRUE) AND FALSE", false],
     ["NOT (TRUE AND TRUE)", false],
   ];
