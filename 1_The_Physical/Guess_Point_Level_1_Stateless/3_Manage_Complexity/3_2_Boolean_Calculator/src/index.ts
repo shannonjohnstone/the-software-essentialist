@@ -17,10 +17,15 @@ export class BooleanCalculator {
     "OR": 1
   };
 
-  private static resolveExpression(stack: unknown[]): unknown[] {
+  private static resolveExpression(stack: unknown[]): unknown {
     const [operand1, condition, operand2, ...rest] = [...stack].reverse();
     const result = (condition === ExpressionsToken.AND) ? operand1 === operand2 : operand2 || operand1;
 
+    return result
+  }
+
+  private static updateStack(stack: unknown[], result: unknown): unknown[] {
+    const [_, __, ___, ...rest] = [...stack].reverse();
     return [...rest.reverse(), result]
   }
 
@@ -43,14 +48,14 @@ export class BooleanCalculator {
         const precedenceValue = stack[stack.length - 2] as unknown as Precedence;
 
         while (stack.length > 1 && BooleanCalculator.precedence[precedenceValue] >= BooleanCalculator.precedence[token]) {
-          stack = BooleanCalculator.resolveExpression([...stack])
+          stack = BooleanCalculator.updateStack(stack, BooleanCalculator.resolveExpression([...stack]))
         }
         stack.push(token);
       } else if (token === ExpressionsToken.OPEN) {
         stack.push(ExpressionsToken.OPEN);
       } else if (token === ExpressionsToken.CLOSE) {
         while (stack.length > 1 && stack[stack.length - 2] !== ExpressionsToken.OPEN) {
-          stack = BooleanCalculator.resolveExpression([...stack])
+          stack = BooleanCalculator.updateStack(stack, BooleanCalculator.resolveExpression([...stack]))
         }
       }
     }
@@ -58,7 +63,7 @@ export class BooleanCalculator {
     stack = stack.filter(item => item !== ExpressionsToken.OPEN && item !== ExpressionsToken.CLOSE).reverse()
 
     while (stack.length > 1) {
-      const newStack = BooleanCalculator.resolveExpression([...stack])
+      const newStack = BooleanCalculator.updateStack(stack, BooleanCalculator.resolveExpression([...stack]))
       stack = newStack
     }
 
