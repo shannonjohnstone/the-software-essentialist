@@ -13,6 +13,17 @@ interface Error {
   message: string;
 }
 
+const nameValidationConditions = {
+  firstName: {
+    min: 1,
+    max: 10,
+  },
+  lastName: {
+    min: 1,
+    max: 15,
+  },
+};
+
 export class Student {
   constructor(private studentProps: StudentProps) { }
 
@@ -24,7 +35,12 @@ export class Student {
     Object.keys(studentProps).forEach((key) => {
       const value = studentProps[key as Keys];
 
-      if (!value.length && value.length <= 10) {
+      const validationConditions = nameValidationConditions[key as Keys];
+
+      if (
+        value.length < validationConditions.min ||
+        value.length > validationConditions.max
+      ) {
         const type = ErrorTypeEnum[key as Keys] || `INVALID_VALUE`;
 
         errors.push({
