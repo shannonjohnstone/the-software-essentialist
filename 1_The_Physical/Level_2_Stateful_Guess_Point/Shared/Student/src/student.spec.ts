@@ -36,4 +36,20 @@ describe("Student", () => {
       ]);
     });
   });
+
+  describe("Given a valid student is created", () => {
+    it("Then a event of StudentCreated should be created", () => {
+      const { student } = Student.create({
+        firstName: "John",
+        lastName: "Smith",
+      });
+
+      expect(student?.events).toEqual([
+        {
+          data: { firstName: "John", lastName: "Smith" },
+          type: "StudentCreated",
+        },
+      ]);
+    });
+  });
 });

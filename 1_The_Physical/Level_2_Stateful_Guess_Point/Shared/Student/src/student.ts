@@ -13,6 +13,11 @@ interface Error {
   message: string;
 }
 
+interface Event {
+  type: string;
+  data: object;
+}
+
 const nameValidationConditions = {
   firstName: {
     min: 1,
@@ -25,7 +30,11 @@ const nameValidationConditions = {
 };
 
 export class Student {
-  constructor(private studentProps: StudentProps) { }
+  private eventsCollection: Event[] = [];
+
+  constructor(private studentProps: StudentProps) {
+    this.addEvent("StudentCreated", this.studentProps);
+  }
 
   private static validateNameProps(studentProps: StudentProps): Error[] {
     const errors: Error[] = [];
@@ -74,5 +83,13 @@ export class Student {
 
   get lastName(): string {
     return this.studentProps.lastName;
+  }
+
+  get events(): Event[] {
+    return this.eventsCollection;
+  }
+
+  private addEvent(type: string, eventProps: Event["data"]) {
+    this.events.push({ type, data: eventProps });
   }
 }
