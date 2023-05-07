@@ -53,10 +53,14 @@ export class Student {
     return errors;
   }
 
-  static create(studentProps: StudentProps): Student | Error[] {
-    const errors = Student.validateNameProps(studentProps);
-    if (errors.length) return errors;
+  static create(studentProps: StudentProps): {
+    student?: Student;
+    error?: Error[];
+  } {
+    const error = Student.validateNameProps(studentProps);
 
-    return new Student(studentProps);
+    if (error.length) return { error };
+
+    return { student: new Student(studentProps) };
   }
 }
