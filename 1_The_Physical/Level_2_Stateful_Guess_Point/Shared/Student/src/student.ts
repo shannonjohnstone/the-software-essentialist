@@ -1,5 +1,12 @@
+interface StudentProps {
+  firstName: string;
+  lastName: string;
+}
+
 export class Student {
-  static create() {
-    return new Student()
+  constructor(private studentProps: StudentProps) { }
+
+  static create(studentProps: StudentProps) {
+    return new Student(studentProps);
   }
 }
