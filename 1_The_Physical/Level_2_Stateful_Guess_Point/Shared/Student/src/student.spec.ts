@@ -70,4 +70,21 @@ describe("Student", () => {
       expect(student?.lastName).toEqual("Ward");
     });
   });
+
+  describe("Given a valid student is created", () => {
+    it("Then throw a error when name is updated incorrectly", () => {
+      const { student } = Student.create({
+        firstName: "John",
+        lastName: "Smith",
+      });
+
+      expect(() => student?.updateFirstName("")).toThrowError(
+        "Invalid firstName value"
+      );
+
+      expect(() => student?.updateLastName("")).toThrowError(
+        "Invalid lastName value"
+      );
+    });
+  });
 });

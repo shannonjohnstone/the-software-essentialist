@@ -29,6 +29,14 @@ const nameValidationConditions = {
   },
 };
 
+class StudentError extends Error {
+  readonly validations: unknown[] = [];
+
+  constructor(public message: string, public validaitons: Error[]) {
+    super(message);
+  }
+}
+
 export class Student {
   private eventsCollection: Event[] = [];
 
@@ -95,8 +103,9 @@ export class Student {
 
   updateFirstName(firstName: string) {
     const validation = Student.validateNameProps({ firstName });
+
     if (validation.length) {
-      throw validation;
+      throw new StudentError(validation[0].message, validation);
     }
 
     this.studentProps.firstName = firstName;
@@ -105,8 +114,9 @@ export class Student {
 
   updateLastName(lastName: string) {
     const validation = Student.validateNameProps({ lastName });
+
     if (validation.length) {
-      throw validation;
+      throw new StudentError(validation[0].message, validation);
     }
 
     this.studentProps.lastName = lastName;
