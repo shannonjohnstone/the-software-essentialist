@@ -1,4 +1,3 @@
-import { stat } from "fs";
 import { Student } from "./student";
 
 describe("Student", () => {
@@ -11,6 +10,18 @@ describe("Student", () => {
 
       const { student } = Student.create(data);
       expect(student).toBeInstanceOf(Student);
+    });
+  });
+
+  describe("Given a valid student is created", () => {
+    it("Then retrieve a students name", () => {
+      const data = {
+        firstName: "John",
+        lastName: "Smith",
+      };
+
+      const { student } = Student.create(data);
+      expect(student?.name).toEqual(`${data.firstName} ${data.lastName}`);
     });
   });
 

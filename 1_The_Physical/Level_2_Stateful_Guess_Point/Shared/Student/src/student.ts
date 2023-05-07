@@ -63,4 +63,16 @@ export class Student {
 
     return { student: new Student(studentProps) };
   }
+
+  get name(): string {
+    return `${this.studentProps.firstName} ${this.studentProps.lastName}`;
+  }
+
+  get firstName(): string {
+    return this.studentProps.firstName;
+  }
+
+  get lastName(): string {
+    return this.studentProps.lastName;
+  }
 }
