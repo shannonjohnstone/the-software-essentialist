@@ -1,9 +1,9 @@
 import { Student } from "./student";
 
 describe("Student", () => {
-  describe("Given a student is initialised", () => {
+  describe("Given a student is created", () => {
     it("Then a studen object is created", () => {
-      const studentObject = new Student();
+      const studentObject = Student.create();
 
       expect(studentObject).toBeInstanceOf(Student)
     })
