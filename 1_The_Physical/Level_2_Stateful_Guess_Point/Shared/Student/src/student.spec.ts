@@ -52,4 +52,22 @@ describe("Student", () => {
       ]);
     });
   });
+
+  describe("Given a valid student is created", () => {
+    it("Then update first and last name", () => {
+      const { student } = Student.create({
+        firstName: "John",
+        lastName: "Smith",
+      });
+
+      expect(student?.firstName).toEqual("John");
+      expect(student?.lastName).toEqual("Smith");
+
+      student?.updateFirstName("Ken");
+      student?.updateLastName("Ward");
+
+      expect(student?.firstName).toEqual("Ken");
+      expect(student?.lastName).toEqual("Ward");
+    });
+  });
 });

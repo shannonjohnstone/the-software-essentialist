@@ -36,7 +36,9 @@ export class Student {
     this.addEvent("StudentCreated", this.studentProps);
   }
 
-  private static validateNameProps(studentProps: StudentProps): Error[] {
+  private static validateNameProps(
+    studentProps: Partial<StudentProps>
+  ): Error[] {
     const errors: Error[] = [];
 
     type Keys = Extract<keyof StudentProps, string>;
@@ -47,7 +49,9 @@ export class Student {
       const validationConditions = nameValidationConditions[key as Keys];
 
       if (
+        !value ||
         value.length < validationConditions.min ||
+        !value ||
         value.length > validationConditions.max
       ) {
         const type = ErrorTypeEnum[key as Keys] || `INVALID_VALUE`;
@@ -87,6 +91,26 @@ export class Student {
 
   get events(): Event[] {
     return this.eventsCollection;
+  }
+
+  updateFirstName(firstName: string) {
+    const validation = Student.validateNameProps({ firstName });
+    if (validation.length) {
+      throw validation;
+    }
+
+    this.studentProps.firstName = firstName;
+    this.addEvent("FirstNameUpdated", { firstName });
+  }
+
+  updateLastName(lastName: string) {
+    const validation = Student.validateNameProps({ lastName });
+    if (validation.length) {
+      throw validation;
+    }
+
+    this.studentProps.lastName = lastName;
+    this.addEvent("LastNameUpdated", { lastName });
   }
 
   private addEvent(type: string, eventProps: Event["data"]) {
