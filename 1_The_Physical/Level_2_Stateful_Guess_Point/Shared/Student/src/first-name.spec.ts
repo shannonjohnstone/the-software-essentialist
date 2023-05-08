@@ -7,4 +7,11 @@ describe("First name", () => {
       expect(firstName).toBeInstanceOf(FirstName);
     });
   });
+
+  describe("Given a first name is created", () => {
+    it("Then get name value", () => {
+      const firstName = FirstName.create("John");
+      expect(firstName.value).toEqual("John");
+    });
+  });
 });
