@@ -21,6 +21,7 @@ describe("Student", () => {
       };
 
       const { student } = Student.create(data);
+
       expect(student?.name).toEqual(`${data.firstName} ${data.lastName}`);
     });
   });
