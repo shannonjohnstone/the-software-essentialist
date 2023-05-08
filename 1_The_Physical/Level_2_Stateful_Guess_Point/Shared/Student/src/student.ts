@@ -1,15 +1,17 @@
 interface StudentProps {
   firstName: string;
   lastName: string;
+  email: string;
 }
 
 enum ErrorTypeEnum {
   firstName = "INVALID_FIRSTNAME",
   lastName = "INVALID_LASTNAME",
+  email = "INVALID_EMAIL",
 }
 
 interface Error {
-  type: ErrorTypeEnum.firstName | ErrorTypeEnum.lastName;
+  type: ErrorTypeEnum.firstName | ErrorTypeEnum.lastName | ErrorTypeEnum.email;
   message: string;
 }
 
@@ -20,12 +22,13 @@ interface Event {
 
 const nameValidationConditions = {
   firstName: {
-    min: 1,
-    max: 10,
+    pattern: /^[a-z]{0,10}$/i,
   },
   lastName: {
-    min: 1,
-    max: 15,
+    pattern: /^[a-z]{0,15}$/i,
+  },
+  email: {
+    pattern: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/gi,
   },
 };
 
@@ -52,16 +55,14 @@ export class Student {
     type Keys = Extract<keyof StudentProps, string>;
 
     Object.keys(studentProps).forEach((key) => {
-      const value = studentProps[key as Keys];
+      const value = studentProps[key as Keys] || "";
 
       const validationConditions = nameValidationConditions[key as Keys];
 
-      if (
-        !value ||
-        value.length < validationConditions.min ||
-        !value ||
-        value.length > validationConditions.max
-      ) {
+      const regex = new RegExp(validationConditions.pattern);
+      const isInvalid = !value || !regex.test(value);
+
+      if (isInvalid) {
         const type = ErrorTypeEnum[key as Keys] || `INVALID_VALUE`;
 
         errors.push({
@@ -74,15 +75,17 @@ export class Student {
     return errors;
   }
 
-  static create(studentProps: StudentProps): {
+  static create(studentProps: { firstName: string; lastName: string }): {
     student?: Student;
     error?: Error[];
   } {
-    const error = Student.validateNameProps(studentProps);
+    const email = Student.generateEmail(studentProps);
+
+    const error = Student.validateNameProps({ ...studentProps, email });
 
     if (error.length) return { error };
 
-    return { student: new Student(studentProps) };
+    return { student: new Student({ ...studentProps, email }) };
   }
 
   get name(): string {
@@ -99,6 +102,19 @@ export class Student {
 
   get events(): Event[] {
     return this.eventsCollection;
+  }
+
+  static generateEmail({
+    firstName = "",
+    lastName = "",
+  }: {
+    firstName: string;
+    lastName: string;
+  }): string {
+    const last = lastName.slice(0, 5);
+    const first = firstName.slice(0, 2);
+
+    return `${last}${first}@essentialist.dev`;
   }
 
   updateFirstName(firstName: string) {

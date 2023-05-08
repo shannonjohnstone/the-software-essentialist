@@ -16,8 +16,8 @@ describe("Student", () => {
   describe("Given a valid student is created", () => {
     it("Then retrieve a students name", () => {
       const data = {
-        firstName: "John",
-        lastName: "Smith",
+        firstName: "Kate",
+        lastName: "Miller",
       };
 
       const { student } = Student.create(data);
@@ -27,12 +27,16 @@ describe("Student", () => {
 
   describe("Given a invalid student is created", () => {
     it("Then a error object is created", () => {
-      const { error } = Student.create({ firstName: "", lastName: "" });
+      const { error } = Student.create({
+        firstName: "",
+        lastName: "",
+      });
 
       expect(error).toBeInstanceOf(Array);
       expect(error).toEqual([
         { message: "Invalid firstName value", type: "INVALID_FIRSTNAME" },
         { message: "Invalid lastName value", type: "INVALID_LASTNAME" },
+        { message: "Invalid email value", type: "INVALID_EMAIL" },
       ]);
     });
   });
@@ -46,7 +50,11 @@ describe("Student", () => {
 
       expect(student?.events).toEqual([
         {
-          data: { firstName: "John", lastName: "Smith" },
+          data: {
+            email: "SmithJo@essentialist.dev",
+            firstName: "John",
+            lastName: "Smith",
+          },
           type: "StudentCreated",
         },
       ]);
