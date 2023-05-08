@@ -15,8 +15,8 @@ export class Validator {
     return items.map((validator) => validator).filter(Boolean);
   }
 
-  static validator({ value, pattern }: ValidatorProps) {
+  static validator({ value = "", pattern }: ValidatorProps) {
     const regex = new RegExp(pattern);
-    return !!value || regex.test(value);
+    return regex.test(value);
   }
 }
