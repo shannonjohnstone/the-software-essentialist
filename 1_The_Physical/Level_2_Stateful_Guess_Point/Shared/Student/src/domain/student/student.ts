@@ -1,7 +1,7 @@
-import { Email } from "./email";
-import { FirstName } from "./first-name";
-import { LastName } from "./last-name";
-import { Validator } from "./validator";
+import { Email } from "../value-objects/email";
+import { FirstName } from "../value-objects/first-name";
+import { LastName } from "../value-objects/last-name";
+import { Validator } from "../../shared/validator";
 
 interface StudentProps {
   firstName: FirstName;

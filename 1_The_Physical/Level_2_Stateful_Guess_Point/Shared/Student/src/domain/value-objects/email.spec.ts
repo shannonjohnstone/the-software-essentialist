@@ -1,5 +1,5 @@
 import { Email } from "./email";
-import { Validator } from "./validator";
+import { Validator } from "../../shared/validator";
 
 describe("Email", () => {
   describe("Given a email is created", () => {

@@ -1,4 +1,4 @@
-import { ValidationError } from "./validator";
+import { ValidationError } from "../../shared/validator";
 
 type Name = string;
 

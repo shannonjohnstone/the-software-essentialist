@@ -1,5 +1,5 @@
 import { FirstName } from "./first-name";
-import { Validator } from "./validator";
+import { Validator } from "../../shared/validator";
 
 describe("First name", () => {
   describe("Given a first name is created", () => {
