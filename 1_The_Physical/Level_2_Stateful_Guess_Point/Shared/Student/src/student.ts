@@ -1,17 +1,22 @@
+import { Email } from "./email";
+import { FirstName } from "./first-name";
+import { LastName } from "./last-name";
+import { Validator } from "./validator";
+
 interface StudentProps {
-  firstName: string;
-  lastName: string;
-  email: string;
+  firstName: FirstName;
+  lastName: LastName;
+  email: Email;
 }
 
-enum ErrorTypeEnum {
-  firstName = "INVALID_FIRSTNAME",
-  lastName = "INVALID_LASTNAME",
-  email = "INVALID_EMAIL",
-}
+// enum ErrorTypeEnum {
+//   firstName = "INVALID_FIRSTNAME",
+//   lastName = "INVALID_LASTNAME",
+//   email = "INVALID_EMAIL",
+// }
 
 interface Error {
-  type: ErrorTypeEnum.firstName | ErrorTypeEnum.lastName | ErrorTypeEnum.email;
+  // type: ErrorTypeEnum.firstName | ErrorTypeEnum.lastName | ErrorTypeEnum.email;
   message: string;
 }
 
@@ -19,18 +24,6 @@ interface Event {
   type: string;
   data: object;
 }
-
-const nameValidationConditions = {
-  firstName: {
-    pattern: /^[a-z]{0,10}$/i,
-  },
-  lastName: {
-    pattern: /^[a-z]{0,15}$/i,
-  },
-  email: {
-    pattern: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/gi,
-  },
-};
 
 class StudentError extends Error {
   readonly validations: unknown[] = [];
@@ -44,99 +37,87 @@ export class Student {
   private eventsCollection: Event[] = [];
 
   constructor(private studentProps: StudentProps) {
-    this.addEvent("StudentCreated", this.studentProps);
-  }
-
-  private static validateNameProps(
-    studentProps: Partial<StudentProps>
-  ): Error[] {
-    const errors: Error[] = [];
-
-    type Keys = Extract<keyof StudentProps, string>;
-
-    Object.keys(studentProps).forEach((key) => {
-      const value = studentProps[key as Keys] || "";
-
-      const validationConditions = nameValidationConditions[key as Keys];
-
-      const regex = new RegExp(validationConditions.pattern);
-      const isInvalid = !value || !regex.test(value);
-
-      if (isInvalid) {
-        const type = ErrorTypeEnum[key as Keys] || `INVALID_VALUE`;
-
-        errors.push({
-          type,
-          message: `Invalid ${key} value`,
-        });
-      }
+    this.addEvent("StudentCreated", {
+      firstName: this.studentProps.firstName.value,
+      lastName: this.studentProps.lastName.value,
+      email: this.studentProps.email.value,
     });
-
-    return errors;
   }
 
   static create(studentProps: { firstName: string; lastName: string }): {
     student?: Student;
     error?: Error[];
   } {
-    const email = Student.generateEmail(studentProps);
+    const firstName = FirstName.create(
+      studentProps.firstName,
+      Validator.validator
+    );
 
-    const error = Student.validateNameProps({ ...studentProps, email });
+    const lastName = LastName.create(
+      studentProps.lastName,
+      Validator.validator
+    );
+
+    const email = Email.create(
+      { firstName: firstName.value, lastName: lastName.value },
+      Validator.validator
+    );
+
+    const error = Validator.validate([
+      firstName.error,
+      lastName.error,
+      email.error,
+    ]);
 
     if (error.length) return { error };
 
-    return { student: new Student({ ...studentProps, email }) };
+    return {
+      student: new Student({
+        firstName,
+        lastName,
+        email,
+      }),
+    };
   }
 
   get name(): string {
-    return `${this.studentProps.firstName} ${this.studentProps.lastName}`;
+    return `${this.studentProps.firstName.value} ${this.studentProps.lastName.value}`;
   }
 
   get firstName(): string {
-    return this.studentProps.firstName;
+    return this.studentProps.firstName.value;
   }
 
   get lastName(): string {
-    return this.studentProps.lastName;
+    return this.studentProps.lastName.value;
   }
 
   get events(): Event[] {
     return this.eventsCollection;
   }
 
-  static generateEmail({
-    firstName = "",
-    lastName = "",
-  }: {
-    firstName: string;
-    lastName: string;
-  }): string {
-    const last = lastName.slice(0, 5);
-    const first = firstName.slice(0, 2);
+  updateFirstName(name: string) {
+    const firstName = this.studentProps.firstName.update(name);
 
-    return `${last}${first}@essentialist.dev`;
-  }
-
-  updateFirstName(firstName: string) {
-    const validation = Student.validateNameProps({ firstName });
-
-    if (validation.length) {
-      throw new StudentError(validation[0].message, validation);
+    const { value, error } = firstName;
+    if (error) {
+      throw new StudentError(error.message, [error]);
     }
 
     this.studentProps.firstName = firstName;
-    this.addEvent("FirstNameUpdated", { firstName });
+    this.addEvent("FirstNameUpdated", { firstName: value });
   }
 
-  updateLastName(lastName: string) {
-    const validation = Student.validateNameProps({ lastName });
+  updateLastName(name: string) {
+    const lastName = this.studentProps.lastName.update(name);
 
-    if (validation.length) {
-      throw new StudentError(validation[0].message, validation);
+    const { value, error } = lastName;
+    if (error) {
+      throw new StudentError(error.message, [error]);
     }
 
     this.studentProps.lastName = lastName;
-    this.addEvent("LastNameUpdated", { lastName });
+    this.addEvent("LastNameUpdated", { lastName: value });
   }
 
   private addEvent(type: string, eventProps: Event["data"]) {

@@ -35,9 +35,15 @@ describe("Student", () => {
 
       expect(error).toBeInstanceOf(Array);
       expect(error).toEqual([
-        { message: "Invalid firstName value", type: "INVALID_FIRSTNAME" },
-        { message: "Invalid lastName value", type: "INVALID_LASTNAME" },
-        { message: "Invalid email value", type: "INVALID_EMAIL" },
+        {
+          message: `Invalid first name value of ""`,
+          type: "INVALID_FIRSTNAME",
+        },
+        { message: `Invalid last name value of ""`, type: "INVALID_LASTNAME" },
+        {
+          message: `Invalid email email of '@essentialist.dev', using a first name of '' and ''`,
+          type: "INVALID_EMAIL",
+        },
       ]);
     });
   });
@@ -52,7 +58,7 @@ describe("Student", () => {
       expect(student?.events).toEqual([
         {
           data: {
-            email: "SmithJo@essentialist.dev",
+            email: "smithjo@essentialist.dev",
             firstName: "John",
             lastName: "Smith",
           },
@@ -88,11 +94,11 @@ describe("Student", () => {
       });
 
       expect(() => student?.updateFirstName("")).toThrowError(
-        "Invalid firstName value"
+        `Invalid first name value of ""`
       );
 
       expect(() => student?.updateLastName("")).toThrowError(
-        "Invalid lastName value"
+        `Invalid last name value of ""`
       );
     });
   });

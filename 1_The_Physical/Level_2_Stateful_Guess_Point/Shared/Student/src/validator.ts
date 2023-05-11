@@ -11,8 +11,10 @@ export interface ValidatorProps {
 type ValidatorItem = ValidationError;
 
 export class Validator {
-  static validate(items: ValidatorItem[]): ValidationError[] {
-    return items.map((validator) => validator).filter(Boolean);
+  static validate(items: (ValidatorItem | undefined)[]): ValidationError[] {
+    return items
+      ?.map((validator) => validator)
+      .filter(Boolean) as ValidationError[];
   }
 
   static validator({ value = "", pattern }: ValidatorProps) {
