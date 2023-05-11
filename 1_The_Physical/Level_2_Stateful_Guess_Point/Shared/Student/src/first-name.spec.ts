@@ -16,6 +16,16 @@ describe("First name", () => {
     });
   });
 
+  describe("Given a valid first name of 'Kate' is updated", () => {
+    it("Then a value of 'Kate' is retruned", () => {
+      const firstName = FirstName.create("John", Validator.validator);
+      expect(firstName.value).toEqual("John");
+
+      const updatedFirstName = firstName.update("Kate");
+      expect(updatedFirstName.value).toEqual("Kate");
+    });
+  });
+
   describe("Given a invalid first name of '' is used", () => {
     it("Then return error", () => {
       const { error } = FirstName.create("", Validator.validator);

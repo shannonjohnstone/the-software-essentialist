@@ -24,6 +24,10 @@ export class FirstName implements Entity<Name> {
     return new FirstName(name, validator);
   }
 
+  update(name: Name) {
+    return new FirstName(name, this.validator);
+  }
+
   get error() {
     const { validator, name, pattern } = this;
 
