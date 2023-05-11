@@ -8,8 +8,8 @@ describe("Student", () => {
         lastName: "Smith",
       };
 
-      const { student } = Student.create(data);
-      expect(student).toBeInstanceOf(Student);
+      const student = Student.create(data);
+      expect(student.value).toBeInstanceOf(Student);
     });
   });
 
@@ -20,9 +20,9 @@ describe("Student", () => {
         lastName: "Miller",
       };
 
-      const { student } = Student.create(data);
+      const student = Student.create(data);
 
-      expect(student?.name).toEqual(`${data.firstName} ${data.lastName}`);
+      expect(student.value?.name).toEqual(`${data.firstName} ${data.lastName}`);
     });
   });
 
@@ -50,12 +50,12 @@ describe("Student", () => {
 
   describe("Given a valid student is created", () => {
     it("Then a event of StudentCreated should be created", () => {
-      const { student } = Student.create({
+      const student = Student.create({
         firstName: "John",
         lastName: "Smith",
       });
 
-      expect(student?.events).toEqual([
+      expect(student.value?.events).toEqual([
         {
           data: {
             email: "smithjo@essentialist.dev",
@@ -70,34 +70,34 @@ describe("Student", () => {
 
   describe("Given a valid student is created", () => {
     it("Then update first and last name", () => {
-      const { student } = Student.create({
+      const student = Student.create({
         firstName: "John",
         lastName: "Smith",
       });
 
-      expect(student?.firstName).toEqual("John");
-      expect(student?.lastName).toEqual("Smith");
+      expect(student.value?.firstName).toEqual("John");
+      expect(student.value?.lastName).toEqual("Smith");
 
-      student?.updateFirstName("Ken");
-      student?.updateLastName("Ward");
+      student.value?.updateFirstName("Ken");
+      student.value?.updateLastName("Ward");
 
-      expect(student?.firstName).toEqual("Ken");
-      expect(student?.lastName).toEqual("Ward");
+      expect(student.value?.firstName).toEqual("Ken");
+      expect(student.value?.lastName).toEqual("Ward");
     });
   });
 
   describe("Given a valid student is created", () => {
     it("Then throw a error when name is updated incorrectly", () => {
-      const { student } = Student.create({
+      const student = Student.create({
         firstName: "John",
         lastName: "Smith",
       });
 
-      expect(() => student?.updateFirstName("")).toThrowError(
+      expect(() => student.value?.updateFirstName("")).toThrowError(
         `Invalid first name value of ""`
       );
 
-      expect(() => student?.updateLastName("")).toThrowError(
+      expect(() => student.value?.updateLastName("")).toThrowError(
         `Invalid last name value of ""`
       );
     });

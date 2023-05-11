@@ -2,6 +2,7 @@ import { Email } from "../value-objects/email";
 import { FirstName } from "../value-objects/first-name";
 import { LastName } from "../value-objects/last-name";
 import { Validator } from "../../shared/validator";
+import { Result } from "../../shared/result";
 
 interface StudentProps {
   firstName: FirstName;
@@ -45,10 +46,10 @@ export class Student {
     });
   }
 
-  static create(studentProps: { firstName: string; lastName: string }): {
-    student?: Student;
-    error?: Error[];
-  } {
+  static create(studentProps: {
+    firstName: string;
+    lastName: string;
+  }): Result<Student, Error[]> {
     const firstName = FirstName.create(
       studentProps.firstName,
       Validator.validator
@@ -72,13 +73,13 @@ export class Student {
 
     if (error.length) return { error };
 
-    return {
-      student: new Student({
+    return Result.success(
+      new Student({
         firstName,
         lastName,
         email,
-      }),
-    };
+      })
+    );
   }
 
   get name(): string {
