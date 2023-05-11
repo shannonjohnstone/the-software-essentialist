@@ -17,6 +17,16 @@ describe("Last name", () => {
     });
   });
 
+  describe("Given a valid last name of 'Hart' is updated", () => {
+    it("Then a value of 'Smith' is retruned", () => {
+      const lastName = LastName.create("Smith", Validator.validator);
+      expect(lastName.value).toEqual("Smith");
+
+      const updatedLastName = lastName.update("Hart");
+      expect(updatedLastName.value).toEqual("Hart");
+    });
+  });
+
   describe("Given a invalid last name of '' is used", () => {
     it("Then return error", () => {
       const { error } = LastName.create("", Validator.validator);
@@ -28,7 +38,7 @@ describe("Last name", () => {
     });
   });
 
-  describe.only("Given a invalid last name of 'aVeryLongLastNameThatIsOverCharacterLimit' is used", () => {
+  describe("Given a invalid last name of 'aVeryLongLastNameThatIsOverCharacterLimit' is used", () => {
     it("Then return error", () => {
       const { error } = LastName.create(
         "aVeryLongLastNameThatIsOverCharacterLimit",
