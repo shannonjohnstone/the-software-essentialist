@@ -17,6 +17,7 @@ interface StudentProps {
 
 interface Error {
   // type: ErrorTypeEnum.firstName | ErrorTypeEnum.lastName | ErrorTypeEnum.email;
+  type: string;
   message: string;
 }
 
