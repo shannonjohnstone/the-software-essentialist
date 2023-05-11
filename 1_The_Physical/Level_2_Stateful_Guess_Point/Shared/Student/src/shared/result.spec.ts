@@ -18,4 +18,21 @@ describe("Result", () => {
       expect(result.error).toEqual(error);
     });
   });
+
+  describe("Given the result is valid", () => {
+    it("Then success will return a value", () => {
+      const result = Result.success("cat");
+
+      expect(result.value).toBeTruthy();
+    });
+  });
+
+  describe("Given the result is invalid", () => {
+    it("Then success will return error", () => {
+      const error = [{ type: "INVALID_ITEM", message: "This is invalid" }];
+      const result = Result.failure(error);
+
+      expect(result.error).toEqual(error);
+    });
+  });
 });
