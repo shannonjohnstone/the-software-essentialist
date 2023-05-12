@@ -61,23 +61,28 @@ export class Student {
     );
 
     const email = Email.create(
-      { firstName: firstName.value, lastName: lastName.value },
+      {
+        firstName: firstName.value?.value || "",
+        lastName: lastName.value?.value || "",
+      },
       Validator.validator
     );
 
-    const error = Validator.validate([
-      firstName.error,
-      lastName.error,
-      email.error,
-    ]);
+    if (!firstName.value || !lastName.value || !email.value) {
+      const error = Validator.validate([
+        firstName.error,
+        lastName.error,
+        email.error,
+      ]);
 
-    if (error.length) return { error };
+      return Result.failure(error);
+    }
 
     return Result.success(
       new Student({
-        firstName,
-        lastName,
-        email,
+        firstName: firstName.value,
+        lastName: lastName.value,
+        email: email.value,
       })
     );
   }
@@ -101,25 +106,39 @@ export class Student {
   updateFirstName(name: string) {
     const firstName = this.studentProps.firstName.update(name);
 
-    const { value, error } = firstName;
-    if (error) {
+    const {
+      value,
+      error = {
+        type: "INVALID_FIRST_NAME_UPDATE",
+        message: "Invalid first name update",
+      },
+    } = firstName;
+
+    if (value) {
+      this.studentProps.firstName = value;
+      this.addEvent("FirstNameUpdated", { firstName: value });
+    } else {
       throw new StudentError(error.message, [error]);
     }
-
-    this.studentProps.firstName = firstName;
-    this.addEvent("FirstNameUpdated", { firstName: value });
   }
 
   updateLastName(name: string) {
     const lastName = this.studentProps.lastName.update(name);
 
-    const { value, error } = lastName;
-    if (error) {
-      throw new StudentError(error.message, [error]);
-    }
+    const {
+      value,
+      error = {
+        type: "INVALID_LAST_NAME_UPDATE",
+        message: "Invalid last name update",
+      },
+    } = lastName;
 
-    this.studentProps.lastName = lastName;
-    this.addEvent("LastNameUpdated", { lastName: value });
+    if (value) {
+      this.studentProps.lastName = value;
+      this.addEvent("LastNameUpdated", { lastName: value });
+    } else {
+      throw new StudentError(error?.message, [error]);
+    }
   }
 
   private addEvent(type: string, eventProps: Event["data"]) {
