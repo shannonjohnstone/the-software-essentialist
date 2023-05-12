@@ -1,10 +1,13 @@
+import { v4 as uuid } from "uuid";
 import { Email } from "../value-objects/email";
 import { FirstName } from "../value-objects/first-name";
 import { LastName } from "../value-objects/last-name";
 import { Validator } from "../../shared/validator";
 import { Result } from "../../shared/result";
+import { AggregateRoot } from "../aggregate-root";
+import { DomainEvent } from "../domain-events";
 
-interface StudentProps {
+interface StudentState {
   firstName: FirstName;
   lastName: LastName;
   email: Email;
@@ -22,43 +25,37 @@ interface Error {
   message: string;
 }
 
-interface Event {
-  type: string;
-  data: object;
-}
-
 class StudentError extends Error {
-  readonly validations: unknown[] = [];
+  readonly validations: Error[] = [];
 
   constructor(public message: string, public validaitons: Error[]) {
     super(message);
   }
 }
 
-export class Student {
-  private eventsCollection: Event[] = [];
+export class Student implements AggregateRoot<StudentState> {
+  public readonly id: string;
+  public readonly state: StudentState;
+  public readonly eventsCollection: DomainEvent[] = [];
 
-  constructor(private studentProps: StudentProps) {
+  constructor(state: StudentState) {
+    this.state = state;
+    this.id = uuid();
+
     this.addEvent("StudentCreated", {
-      firstName: this.studentProps.firstName.value,
-      lastName: this.studentProps.lastName.value,
-      email: this.studentProps.email.value,
+      firstName: this.state.firstName.value,
+      lastName: this.state.lastName.value,
+      email: this.state.email.value,
     });
   }
 
-  static create(studentProps: {
+  static create(state: {
     firstName: string;
     lastName: string;
   }): Result<Student, Error[]> {
-    const firstName = FirstName.create(
-      studentProps.firstName,
-      Validator.validator
-    );
+    const firstName = FirstName.create(state.firstName, Validator.validator);
 
-    const lastName = LastName.create(
-      studentProps.lastName,
-      Validator.validator
-    );
+    const lastName = LastName.create(state.lastName, Validator.validator);
 
     const email = Email.create(
       {
@@ -88,23 +85,23 @@ export class Student {
   }
 
   get name(): string {
-    return `${this.studentProps.firstName.value} ${this.studentProps.lastName.value}`;
+    return `${this.state.firstName.value} ${this.state.lastName.value}`;
   }
 
   get firstName(): string {
-    return this.studentProps.firstName.value;
+    return this.state.firstName.value;
   }
 
   get lastName(): string {
-    return this.studentProps.lastName.value;
+    return this.state.lastName.value;
   }
 
-  get events(): Event[] {
+  get events(): DomainEvent[] {
     return this.eventsCollection;
   }
 
   updateFirstName(name: string) {
-    const firstName = this.studentProps.firstName.update(name);
+    const firstName = this.state.firstName.update(name);
 
     const {
       value,
@@ -115,7 +112,7 @@ export class Student {
     } = firstName;
 
     if (value) {
-      this.studentProps.firstName = value;
+      this.state.firstName = value;
       this.addEvent("FirstNameUpdated", { firstName: value });
     } else {
       throw new StudentError(error.message, [error]);
@@ -123,7 +120,7 @@ export class Student {
   }
 
   updateLastName(name: string) {
-    const lastName = this.studentProps.lastName.update(name);
+    const lastName = this.state.lastName.update(name);
 
     const {
       value,
@@ -134,14 +131,14 @@ export class Student {
     } = lastName;
 
     if (value) {
-      this.studentProps.lastName = value;
+      this.state.lastName = value;
       this.addEvent("LastNameUpdated", { lastName: value });
     } else {
       throw new StudentError(error?.message, [error]);
     }
   }
 
-  private addEvent(type: string, eventProps: Event["data"]) {
-    this.events.push({ type, data: eventProps });
+  private addEvent(type: string, eventProps: DomainEvent["data"]) {
+    this.eventsCollection.push({ type, data: eventProps });
   }
 }
