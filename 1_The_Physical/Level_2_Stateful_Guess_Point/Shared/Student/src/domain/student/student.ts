@@ -5,7 +5,7 @@ import { LastName } from "../value-objects/last-name";
 import { Validator } from "../../shared/validator";
 import { Result } from "../../shared/result";
 import { AggregateRoot } from "../aggregate-root";
-import { DomainEvent } from "../domain-events";
+import { EventCollection } from "../domain-events";
 
 interface StudentState {
   firstName: FirstName;
@@ -33,16 +33,25 @@ class StudentError extends Error {
   }
 }
 
-export class Student implements AggregateRoot<StudentState> {
+type StudentEventTypes =
+  | "StudentCreated"
+  | "StudentUpdated"
+  | "LastNameUpdated"
+  | "FirstNameUpdated";
+
+type StudentEvent = EventCollection<StudentEventTypes, object>;
+
+export class Student implements AggregateRoot<StudentState, StudentEvent> {
   public readonly id: string;
   public readonly state: StudentState;
-  public readonly eventsCollection: DomainEvent[] = [];
+  public readonly eventsCollection: StudentEvent;
 
   constructor(state: StudentState) {
     this.state = state;
     this.id = uuid();
+    this.eventsCollection = new EventCollection();
 
-    this.addEvent("StudentCreated", {
+    this.eventsCollection.add("StudentCreated", {
       firstName: this.state.firstName.value,
       lastName: this.state.lastName.value,
       email: this.state.email.value,
@@ -96,8 +105,8 @@ export class Student implements AggregateRoot<StudentState> {
     return this.state.lastName.value;
   }
 
-  get events(): DomainEvent[] {
-    return this.eventsCollection;
+  get events() {
+    return this.eventsCollection.get();
   }
 
   updateFirstName(name: string) {
@@ -113,7 +122,7 @@ export class Student implements AggregateRoot<StudentState> {
 
     if (value) {
       this.state.firstName = value;
-      this.addEvent("FirstNameUpdated", { firstName: value });
+      this.eventsCollection.add("FirstNameUpdated", { firstName: value });
     } else {
       throw new StudentError(error.message, [error]);
     }
@@ -132,13 +141,9 @@ export class Student implements AggregateRoot<StudentState> {
 
     if (value) {
       this.state.lastName = value;
-      this.addEvent("LastNameUpdated", { lastName: value });
+      this.eventsCollection.add("LastNameUpdated", { lastName: value });
     } else {
       throw new StudentError(error?.message, [error]);
     }
-  }
-
-  private addEvent(type: string, eventProps: DomainEvent["data"]) {
-    this.eventsCollection.push({ type, data: eventProps });
   }
 }
