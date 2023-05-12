@@ -8,7 +8,7 @@ describe("Email", () => {
         { firstName: "John", lastName: "Smith" },
         Validator.validator
       );
-      expect(email).toBeInstanceOf(Email);
+      expect(email.value).toBeInstanceOf(Email);
     });
   });
 
@@ -18,7 +18,7 @@ describe("Email", () => {
         { firstName: "John", lastName: "Smith" },
         Validator.validator
       );
-      expect(email.value).toEqual("smithjo@essentialist.dev");
+      expect(email.value?.value).toEqual("smithjo@essentialist.dev");
     });
   });
 

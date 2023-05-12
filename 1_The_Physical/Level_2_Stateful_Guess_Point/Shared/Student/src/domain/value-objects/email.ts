@@ -1,13 +1,18 @@
+import { Result } from "../../shared/result";
 import { ValidationError } from "../../shared/validator";
+
+type EmailValueProp = string;
 
 interface EmailProps {
   firstName: string;
   lastName: string;
 }
 
+type EmailError = ValidationError | undefined;
+
 interface Entity<Props> {
   value: Props;
-  error?: ValidationError | void;
+  error?: EmailError;
 }
 
 type Validator = ({
@@ -18,7 +23,7 @@ type Validator = ({
   pattern: RegExp;
 }) => boolean;
 
-export class Email implements Entity<string> {
+export class Email implements Entity<EmailValueProp> {
   private pattern = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/gi;
   private email: string;
 
@@ -39,8 +44,14 @@ export class Email implements Entity<string> {
     return `${last}${first}@essentialist.dev`.toLowerCase();
   }
 
-  static create(emailProps: EmailProps, validator: Validator): Email {
-    return new Email(emailProps, validator);
+  static create(
+    emailProps: EmailProps,
+    validator: Validator
+  ): Result<Email, EmailError> {
+    const email = new Email(emailProps, validator);
+
+    if (email.error) return Result.failure(email.error);
+    return Result.success(email);
   }
 
   get error() {

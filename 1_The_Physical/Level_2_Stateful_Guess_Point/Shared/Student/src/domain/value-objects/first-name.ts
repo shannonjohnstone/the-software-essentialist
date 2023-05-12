@@ -1,10 +1,13 @@
+import { Result } from "../../shared/result";
 import { ValidationError } from "../../shared/validator";
 
 type Name = string;
 
+type FirstNameError = ValidationError | undefined;
+
 interface Entity<Props> {
   value: Props;
-  error?: ValidationError | void;
+  error?: FirstNameError;
 }
 
 type Validator = ({
@@ -16,22 +19,29 @@ type Validator = ({
 }) => boolean;
 
 export class FirstName implements Entity<Name> {
-  private pattern = /^[a-z]{1,10}$/i;
+  static readonly pattern = /^[a-z]{1,10}$/i;
 
   constructor(private name: Name, private validator: Validator) { }
 
-  static create(name: Name, validator: Validator): FirstName {
-    return new FirstName(name, validator);
+  public static create(
+    name: Name,
+    validator: Validator
+  ): Result<FirstName, FirstNameError> {
+    const firstName = new FirstName(name, validator);
+
+    if (firstName.error) return Result.failure(firstName.error);
+
+    return Result.success(firstName);
   }
 
-  update(name: Name) {
-    return new FirstName(name, this.validator);
+  public update(name: Name) {
+    return FirstName.create(name, this.validator);
   }
 
-  get error() {
-    const { validator, name, pattern } = this;
+  public get error() {
+    const { validator, name } = this;
 
-    const isInvalid = !validator({ value: name, pattern });
+    const isInvalid = !validator({ value: name, pattern: FirstName.pattern });
 
     if (isInvalid) {
       return {
@@ -41,7 +51,7 @@ export class FirstName implements Entity<Name> {
     }
   }
 
-  get value() {
+  public get value() {
     return this.name;
   }
 }

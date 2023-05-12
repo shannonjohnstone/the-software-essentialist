@@ -5,24 +5,24 @@ describe("First name", () => {
   describe("Given a first name is created", () => {
     it("Then there should be a valid first name instance", () => {
       const firstName = FirstName.create("John", Validator.validator);
-      expect(firstName).toBeInstanceOf(FirstName);
+      expect(firstName.value).toBeInstanceOf(FirstName);
     });
   });
 
   describe("Given a valid first name of 'John' is created", () => {
     it("Then a value of 'John' is retruned", () => {
       const firstName = FirstName.create("John", Validator.validator);
-      expect(firstName.value).toEqual("John");
+      expect(firstName.value?.value).toEqual("John");
     });
   });
 
   describe("Given a valid first name of 'Kate' is updated", () => {
     it("Then a value of 'Kate' is retruned", () => {
       const firstName = FirstName.create("John", Validator.validator);
-      expect(firstName.value).toEqual("John");
+      expect(firstName.value?.value).toEqual("John");
 
-      const updatedFirstName = firstName.update("Kate");
-      expect(updatedFirstName.value).toEqual("Kate");
+      const updatedFirstName = firstName.value?.update("Kate");
+      expect(updatedFirstName?.value?.value).toEqual("Kate");
     });
   });
 

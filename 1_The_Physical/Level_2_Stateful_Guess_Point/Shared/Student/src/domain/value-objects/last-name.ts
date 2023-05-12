@@ -1,10 +1,13 @@
+import { Result } from "../../shared/result";
 import { ValidationError } from "../../shared/validator";
 
 type Name = string;
 
+type LastNameError = ValidationError | undefined;
+
 interface Entity<Props> {
   value: Props;
-  error?: ValidationError | void;
+  error?: LastNameError;
 }
 
 type Validator = ({
@@ -20,12 +23,19 @@ export class LastName implements Entity<Name> {
 
   constructor(private name: Name, private validator: Validator) { }
 
-  static create(name: Name, validator: Validator): LastName {
-    return new LastName(name, validator);
+  static create(
+    name: Name,
+    validator: Validator
+  ): Result<LastName, LastNameError> {
+    const lastName = new LastName(name, validator);
+
+    if (lastName.error) return Result.failure(lastName.error);
+
+    return Result.success(lastName);
   }
 
   update(name: Name) {
-    return new LastName(name, this.validator);
+    return LastName.create(name, this.validator);
   }
 
   get error() {
