@@ -13,31 +13,19 @@ interface StudentState {
   email: Email;
 }
 
-// enum ErrorTypeEnum {
-//   firstName = "INVALID_FIRSTNAME",
-//   lastName = "INVALID_LASTNAME",
-//   email = "INVALID_EMAIL",
-// }
-
 interface Error {
-  // type: ErrorTypeEnum.firstName | ErrorTypeEnum.lastName | ErrorTypeEnum.email;
   type: string;
   message: string;
 }
 
-class StudentError extends Error {
-  readonly validations: Error[] = [];
-
-  constructor(public message: string, public validaitons: Error[]) {
-    super(message);
-  }
+enum StudentEventTypesValues {
+  StudentCreated = "StudentCreated",
+  StudentUpdated = "StudentUpdated",
+  LastNameUpdated = "LastNameUpdated",
+  FirstNameUpdated = "FirstNameUpdated",
 }
 
-type StudentEventTypes =
-  | "StudentCreated"
-  | "StudentUpdated"
-  | "LastNameUpdated"
-  | "FirstNameUpdated";
+type StudentEventTypes = `${StudentEventTypesValues}`;
 
 type StudentEvent = EventCollection<StudentEventTypes, object>;
 
@@ -63,7 +51,6 @@ export class Student implements AggregateRoot<StudentState, StudentEvent> {
     lastName: string;
   }): Result<Student, Error[]> {
     const firstName = FirstName.create(state.firstName, Validator.validator);
-
     const lastName = LastName.create(state.lastName, Validator.validator);
 
     const email = Email.create(
@@ -112,38 +99,26 @@ export class Student implements AggregateRoot<StudentState, StudentEvent> {
   updateFirstName(name: string) {
     const firstName = this.state.firstName.update(name);
 
-    const {
-      value,
-      error = {
-        type: "INVALID_FIRST_NAME_UPDATE",
-        message: "Invalid first name update",
-      },
-    } = firstName;
+    const { value, error } = firstName;
 
-    if (value) {
+    if (value && !error) {
       this.state.firstName = value;
       this.eventsCollection.add("FirstNameUpdated", { firstName: value });
-    } else {
-      throw new StudentError(error.message, [error]);
     }
+
+    return Result.failure(error);
   }
 
   updateLastName(name: string) {
     const lastName = this.state.lastName.update(name);
 
-    const {
-      value,
-      error = {
-        type: "INVALID_LAST_NAME_UPDATE",
-        message: "Invalid last name update",
-      },
-    } = lastName;
+    const { value, error } = lastName;
 
-    if (value) {
+    if (value && !error) {
       this.state.lastName = value;
       this.eventsCollection.add("LastNameUpdated", { lastName: value });
-    } else {
-      throw new StudentError(error?.message, [error]);
     }
+
+    return Result.failure(error);
   }
 }

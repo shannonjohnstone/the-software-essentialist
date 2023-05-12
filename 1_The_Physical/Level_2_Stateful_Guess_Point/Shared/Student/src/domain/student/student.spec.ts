@@ -93,13 +93,19 @@ describe("Student", () => {
         lastName: "Smith",
       });
 
-      expect(() => student.value?.updateFirstName("")).toThrowError(
-        `Invalid first name value of ""`
-      );
+      const updatedFirstName = student.value?.updateFirstName("");
 
-      expect(() => student.value?.updateLastName("")).toThrowError(
-        `Invalid last name value of ""`
-      );
+      expect(updatedFirstName?.error).toEqual({
+        message: 'Invalid first name value of ""',
+        type: "INVALID_FIRSTNAME",
+      });
+
+      const updatedLastName = student.value?.updateLastName("");
+
+      expect(updatedLastName?.error).toEqual({
+        message: 'Invalid last name value of ""',
+        type: "INVALID_LASTNAME",
+      });
     });
   });
 });
