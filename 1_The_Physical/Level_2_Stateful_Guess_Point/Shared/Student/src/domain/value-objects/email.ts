@@ -1,19 +1,13 @@
 import { Result } from "../../shared/result";
 import { ValidationError } from "../../shared/validator";
+import { ValueObject } from "./value-object";
 
-type EmailValueProp = string;
-
-interface EmailProps {
+interface EmailInputProps {
   firstName: string;
   lastName: string;
 }
 
 type EmailError = ValidationError | undefined;
-
-interface Entity<Props> {
-  getValue: Props;
-  error?: EmailError;
-}
 
 type Validator = ({
   value,
@@ -23,11 +17,14 @@ type Validator = ({
   pattern: RegExp;
 }) => boolean;
 
-export class Email implements Entity<EmailValueProp> {
+export class Email implements ValueObject<string, EmailError> {
   private pattern = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/gi;
   private email: string;
 
-  constructor(private emailProps: EmailProps, private validator: Validator) {
+  constructor(
+    private emailProps: EmailInputProps,
+    private validator: Validator
+  ) {
     this.email = Email.generateEmail(this.emailProps);
   }
 
@@ -45,7 +42,7 @@ export class Email implements Entity<EmailValueProp> {
   }
 
   static create(
-    emailProps: EmailProps,
+    emailProps: EmailInputProps,
     validator: Validator
   ): Result<Email, EmailError> {
     const email = new Email(emailProps, validator);

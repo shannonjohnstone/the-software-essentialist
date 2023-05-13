@@ -1,14 +1,10 @@
 import { Result } from "../../shared/result";
 import { ValidationError } from "../../shared/validator";
+import { ValueObject } from "./value-object";
 
 type Name = string;
 
 type FirstNameError = ValidationError | undefined;
-
-interface Entity<Props> {
-  getValue: Props;
-  error?: FirstNameError;
-}
 
 type Validator = ({
   value,
@@ -18,7 +14,7 @@ type Validator = ({
   pattern: RegExp;
 }) => boolean;
 
-export class FirstName implements Entity<Name> {
+export class FirstName implements ValueObject<Name, FirstNameError> {
   static readonly pattern = /^[a-z]{1,10}$/i;
 
   constructor(private name: Name, private validator: Validator) { }
