@@ -6,28 +6,16 @@ import { Validator } from "../../shared/validator";
 import { Result } from "../../shared/result";
 import { AggregateRoot } from "../aggregate-root";
 import { eventList } from "../domain-events";
-
-interface StudentState {
-  firstName: FirstName;
-  lastName: LastName;
-  email: Email;
-}
-
-interface Error {
-  type: string;
-  message: string;
-}
-
-enum StudentEventTypesValues {
-  StudentCreated = "StudentCreated",
-  StudentUpdated = "StudentUpdated",
-  LastNameUpdated = "LastNameUpdated",
-  FirstNameUpdated = "FirstNameUpdated",
-}
-
-type StudentEventTypes = `${StudentEventTypesValues}`;
-
-type StudentEvent = eventList<StudentEventTypes, object>;
+import { FirstNameUpdatedEvent } from "./events/first-name-updated";
+import { LastNameUpdatedEvent } from "./events/last-name-updated";
+import { StudentCreated } from "./events/student-created";
+import {
+  StudentEvent,
+  StudentEventProps,
+  StudentEventTypes,
+  StudentState,
+  Error,
+} from "./student-types";
 
 export class Student implements AggregateRoot<StudentState, StudentEvent> {
   public readonly id: string;
@@ -37,13 +25,12 @@ export class Student implements AggregateRoot<StudentState, StudentEvent> {
   constructor(state: StudentState) {
     this.state = state;
     this.id = uuid();
-    this.eventsCollection = new eventList();
+    this.eventsCollection = new eventList<
+      StudentEventTypes,
+      StudentEventProps
+    >();
 
-    this.eventsCollection.add("StudentCreated", {
-      firstName: this.state.firstName.getValue,
-      lastName: this.state.lastName.getValue,
-      email: this.state.email.getValue,
-    });
+    this.eventsCollection.add(new StudentCreated(this.id, this.state));
   }
 
   static create(state: {
@@ -107,9 +94,8 @@ export class Student implements AggregateRoot<StudentState, StudentEvent> {
 
     if (value) {
       this.state.firstName = value;
-      this.eventsCollection.add("FirstNameUpdated", {
-        firstName: value,
-      });
+
+      this.eventsCollection.add(new LastNameUpdatedEvent(this.id, this.state));
     }
   }
 
@@ -124,7 +110,8 @@ export class Student implements AggregateRoot<StudentState, StudentEvent> {
 
     if (value) {
       this.state.lastName = value;
-      this.eventsCollection.add("LastNameUpdated", { lastName: value });
+
+      this.eventsCollection.add(new FirstNameUpdatedEvent(this.id, this.state));
     }
   }
 }

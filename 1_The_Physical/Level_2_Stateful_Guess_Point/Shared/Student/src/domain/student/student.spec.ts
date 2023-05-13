@@ -1,4 +1,5 @@
 import { Student } from "./student";
+jest.mock("uuid", () => ({ v4: () => "123456789" }));
 
 describe("Student", () => {
   describe("Given a valid student is created", () => {
@@ -62,6 +63,7 @@ describe("Student", () => {
           data: {
             email: "smithjo@essentialist.dev",
             firstName: "John",
+            id: "123456789",
             lastName: "Smith",
           },
           type: "StudentCreated",
