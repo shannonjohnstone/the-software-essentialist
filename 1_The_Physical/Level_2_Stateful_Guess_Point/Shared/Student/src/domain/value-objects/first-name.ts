@@ -6,7 +6,7 @@ type Name = string;
 type FirstNameError = ValidationError | undefined;
 
 interface Entity<Props> {
-  value: Props;
+  getValue: Props;
   error?: FirstNameError;
 }
 
@@ -51,7 +51,7 @@ export class FirstName implements Entity<Name> {
     }
   }
 
-  public get value() {
+  public get getValue() {
     return this.name;
   }
 }

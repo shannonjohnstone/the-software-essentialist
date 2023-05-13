@@ -40,9 +40,9 @@ export class Student implements AggregateRoot<StudentState, StudentEvent> {
     this.eventsCollection = new EventCollection();
 
     this.eventsCollection.add("StudentCreated", {
-      firstName: this.state.firstName.value,
-      lastName: this.state.lastName.value,
-      email: this.state.email.value,
+      firstName: this.state.firstName.getValue,
+      lastName: this.state.lastName.getValue,
+      email: this.state.email.getValue,
     });
   }
 
@@ -55,8 +55,8 @@ export class Student implements AggregateRoot<StudentState, StudentEvent> {
 
     const email = Email.create(
       {
-        firstName: firstName.value?.value || "",
-        lastName: lastName.value?.value || "",
+        firstName: firstName.value?.getValue || "",
+        lastName: lastName.value?.getValue || "",
       },
       Validator.validator
     );
@@ -81,15 +81,15 @@ export class Student implements AggregateRoot<StudentState, StudentEvent> {
   }
 
   get name(): string {
-    return `${this.state.firstName.value} ${this.state.lastName.value}`;
+    return `${this.state.firstName.getValue} ${this.state.lastName.getValue}`;
   }
 
   get firstName(): string {
-    return this.state.firstName.value;
+    return this.state.firstName.getValue;
   }
 
   get lastName(): string {
-    return this.state.lastName.value;
+    return this.state.lastName.getValue;
   }
 
   get events() {
@@ -101,24 +101,31 @@ export class Student implements AggregateRoot<StudentState, StudentEvent> {
 
     const { value, error } = firstName;
 
-    if (value && !error) {
-      this.state.firstName = value;
-      this.eventsCollection.add("FirstNameUpdated", { firstName: value });
+    if (!value && error) {
+      return Result.failure(error);
     }
 
-    return Result.failure(error);
+    if (value) {
+      this.state.firstName = value;
+      this.eventsCollection.add("FirstNameUpdated", {
+        firstName: value,
+      });
+    }
   }
 
   updateLastName(name: string) {
+    console.log(name, "name");
     const lastName = this.state.lastName.update(name);
 
     const { value, error } = lastName;
 
-    if (value && !error) {
+    if (!value && error) {
+      return Result.failure(error);
+    }
+
+    if (value) {
       this.state.lastName = value;
       this.eventsCollection.add("LastNameUpdated", { lastName: value });
     }
-
-    return Result.failure(error);
   }
 }

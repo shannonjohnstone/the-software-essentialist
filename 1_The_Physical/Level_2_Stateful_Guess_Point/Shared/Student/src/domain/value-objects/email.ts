@@ -11,7 +11,7 @@ interface EmailProps {
 type EmailError = ValidationError | undefined;
 
 interface Entity<Props> {
-  value: Props;
+  getValue: Props;
   error?: EmailError;
 }
 
@@ -67,7 +67,7 @@ export class Email implements Entity<EmailValueProp> {
     }
   }
 
-  get value() {
+  get getValue() {
     return this.email;
   }
 }

@@ -19,10 +19,10 @@ describe("First name", () => {
   describe("Given a valid first name of 'Kate' is updated", () => {
     it("Then a value of 'Kate' is retruned", () => {
       const firstName = FirstName.create("John", Validator.validator);
-      expect(firstName.value?.value).toEqual("John");
+      expect(firstName.value?.getValue).toEqual("John");
 
       const updatedFirstName = firstName.value?.update("Kate");
-      expect(updatedFirstName?.value?.value).toEqual("Kate");
+      expect(updatedFirstName?.value?.getValue).toEqual("Kate");
     });
   });
 

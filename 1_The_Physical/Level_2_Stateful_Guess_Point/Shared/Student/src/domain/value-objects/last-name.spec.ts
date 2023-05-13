@@ -13,17 +13,17 @@ describe("Last name", () => {
     it("Then a value of 'Smith' is retruned", () => {
       const lastName = LastName.create("Smith", Validator.validator);
       expect(lastName.error).toBeFalsy();
-      expect(lastName.value?.value).toEqual("Smith");
+      expect(lastName.value).toEqual("Smith");
     });
   });
 
   describe("Given a valid last name of 'Hart' is updated", () => {
     it("Then a value of 'Smith' is retruned", () => {
       const lastName = LastName.create("Smith", Validator.validator);
-      expect(lastName.value?.value).toEqual("Smith");
+      expect(lastName.value?.getValue).toEqual("Smith");
 
       const updatedLastName = lastName.value?.update("Hart");
-      expect(updatedLastName?.value?.value).toEqual("Hart");
+      expect(updatedLastName?.value?.getValue).toEqual("Hart");
     });
   });
 

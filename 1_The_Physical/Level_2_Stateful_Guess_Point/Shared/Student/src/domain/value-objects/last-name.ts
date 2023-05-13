@@ -6,7 +6,7 @@ type Name = string;
 type LastNameError = ValidationError | undefined;
 
 interface Entity<Props> {
-  value: Props;
+  getValue: Props;
   error?: LastNameError;
 }
 
@@ -28,9 +28,7 @@ export class LastName implements Entity<Name> {
     validator: Validator
   ): Result<LastName, LastNameError> {
     const lastName = new LastName(name, validator);
-
     if (lastName.error) return Result.failure(lastName.error);
-
     return Result.success(lastName);
   }
 
@@ -51,7 +49,7 @@ export class LastName implements Entity<Name> {
     }
   }
 
-  get value() {
+  get getValue() {
     return this.name;
   }
 }

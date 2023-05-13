@@ -18,7 +18,7 @@ describe("Email", () => {
         { firstName: "John", lastName: "Smith" },
         Validator.validator
       );
-      expect(email.value?.value).toEqual("smithjo@essentialist.dev");
+      expect(email.value?.getValue).toEqual("smithjo@essentialist.dev");
     });
   });
 
