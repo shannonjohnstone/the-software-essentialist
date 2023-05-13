@@ -22,7 +22,9 @@ describe("Student", () => {
 
       const student = Student.create(data);
 
-      expect(student.value?.name).toEqual(`${data.firstName} ${data.lastName}`);
+      expect(student.value?.getName).toEqual(
+        `${data.firstName} ${data.lastName}`
+      );
     });
   });
 
@@ -55,7 +57,7 @@ describe("Student", () => {
         lastName: "Smith",
       });
 
-      expect(student.value?.events).toEqual([
+      expect(student.value?.getEvents).toEqual([
         {
           data: {
             email: "smithjo@essentialist.dev",
@@ -75,14 +77,14 @@ describe("Student", () => {
         lastName: "Smith",
       });
 
-      expect(student.value?.firstName).toEqual("John");
-      expect(student.value?.lastName).toEqual("Smith");
+      expect(student.value?.getFirstName).toEqual("John");
+      expect(student.value?.getLastName).toEqual("Smith");
 
       student.value?.updateFirstName("Ken");
       student.value?.updateLastName("Ward");
 
-      expect(student.value?.firstName).toEqual("Ken");
-      expect(student.value?.lastName).toEqual("Ward");
+      expect(student.value?.getFirstName).toEqual("Ken");
+      expect(student.value?.getLastName).toEqual("Ward");
     });
   });
 

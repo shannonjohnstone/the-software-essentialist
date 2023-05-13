@@ -12,7 +12,7 @@ describe("First name", () => {
   describe("Given a valid first name of 'John' is created", () => {
     it("Then a value of 'John' is retruned", () => {
       const firstName = FirstName.create("John", Validator.validator);
-      expect(firstName.value?.value).toEqual("John");
+      expect(firstName.value?.getValue).toEqual("John");
     });
   });
 

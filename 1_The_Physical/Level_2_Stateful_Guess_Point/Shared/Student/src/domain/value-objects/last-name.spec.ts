@@ -13,7 +13,7 @@ describe("Last name", () => {
     it("Then a value of 'Smith' is retruned", () => {
       const lastName = LastName.create("Smith", Validator.validator);
       expect(lastName.error).toBeFalsy();
-      expect(lastName.value).toEqual("Smith");
+      expect(lastName.value?.getValue).toEqual("Smith");
     });
   });
 

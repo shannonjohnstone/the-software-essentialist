@@ -80,19 +80,19 @@ export class Student implements AggregateRoot<StudentState, StudentEvent> {
     );
   }
 
-  get name(): string {
+  get getName(): string {
     return `${this.state.firstName.getValue} ${this.state.lastName.getValue}`;
   }
 
-  get firstName(): string {
+  get getFirstName(): string {
     return this.state.firstName.getValue;
   }
 
-  get lastName(): string {
+  get getLastName(): string {
     return this.state.lastName.getValue;
   }
 
-  get events() {
+  get getEvents() {
     return this.eventsCollection.get();
   }
 
@@ -101,7 +101,7 @@ export class Student implements AggregateRoot<StudentState, StudentEvent> {
 
     const { value, error } = firstName;
 
-    if (!value && error) {
+    if (error) {
       return Result.failure(error);
     }
 
@@ -114,12 +114,11 @@ export class Student implements AggregateRoot<StudentState, StudentEvent> {
   }
 
   updateLastName(name: string) {
-    console.log(name, "name");
     const lastName = this.state.lastName.update(name);
 
     const { value, error } = lastName;
 
-    if (!value && error) {
+    if (error) {
       return Result.failure(error);
     }
 
