@@ -5,7 +5,7 @@ import { LastName } from "../value-objects/last-name";
 import { Validator } from "../../shared/validator";
 import { Result } from "../../shared/result";
 import { AggregateRoot } from "../aggregate-root";
-import { EventCollection } from "../domain-events";
+import { eventList } from "../domain-events";
 
 interface StudentState {
   firstName: FirstName;
@@ -27,7 +27,7 @@ enum StudentEventTypesValues {
 
 type StudentEventTypes = `${StudentEventTypesValues}`;
 
-type StudentEvent = EventCollection<StudentEventTypes, object>;
+type StudentEvent = eventList<StudentEventTypes, object>;
 
 export class Student implements AggregateRoot<StudentState, StudentEvent> {
   public readonly id: string;
@@ -37,7 +37,7 @@ export class Student implements AggregateRoot<StudentState, StudentEvent> {
   constructor(state: StudentState) {
     this.state = state;
     this.id = uuid();
-    this.eventsCollection = new EventCollection();
+    this.eventsCollection = new eventList();
 
     this.eventsCollection.add("StudentCreated", {
       firstName: this.state.firstName.getValue,

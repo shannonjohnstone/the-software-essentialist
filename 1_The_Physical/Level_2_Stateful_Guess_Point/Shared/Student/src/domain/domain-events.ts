@@ -1,8 +1,8 @@
-export class EventCollection<T extends string, E extends object> {
+export class eventList<T extends string, E extends object> {
   private events: { type: T; data: E }[] = [];
 
   public static create() {
-    return new EventCollection();
+    return new eventList();
   }
 
   public add(type: T, data: E) {
