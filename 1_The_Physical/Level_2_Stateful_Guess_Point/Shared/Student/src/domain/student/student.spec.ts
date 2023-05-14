@@ -123,4 +123,48 @@ describe("Student", () => {
       });
     });
   });
+
+  describe.only("Given a group of changes are made to a student", () => {
+    it("Then the events should be correctly ordered", () => {
+      const student = Student.create({
+        firstName: "John",
+        lastName: "Smith",
+      });
+
+      student.getValue.updateFirstName("Kate");
+      student.getValue.updateLastName("Banks");
+
+      const events = student.getValue.getEvents;
+
+      expect(events).toEqual([
+        {
+          data: {
+            email: "smithjo@essentialist.dev",
+            firstName: "John",
+            id: "123456789",
+            lastName: "Smith",
+          },
+          type: "StudentCreated",
+        },
+        {
+          data: {
+            email: "smithjo@essentialist.dev",
+            firstName: "Kate",
+            id: "123456789",
+            lastName: "Smith",
+          },
+          type: "FirstNameUpdated",
+        },
+        {
+          data: {
+            email: "smithjo@essentialist.dev",
+            firstName: "Kate",
+            id: "123456789",
+            lastName: "Banks",
+          },
+          type: "LastNameUpdated",
+        },
+      ]);
+    });
+  });
 });

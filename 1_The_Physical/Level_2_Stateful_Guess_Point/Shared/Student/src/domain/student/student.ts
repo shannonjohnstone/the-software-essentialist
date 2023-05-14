@@ -35,7 +35,7 @@ export class Student implements AggregateRoot<StudentState, StudentEvent> {
       StudentEventProps
     >();
 
-    this.eventsCollection.add(new StudentCreated(this.id, this.state));
+    this.eventsCollection.add(new StudentCreated(this.id, this.state).getEvent);
   }
 
   static create(state: {
@@ -100,7 +100,9 @@ export class Student implements AggregateRoot<StudentState, StudentEvent> {
 
     this.state.firstName = firstName.getValue;
 
-    this.eventsCollection.add(new LastNameUpdatedEvent(this.id, this.state));
+    this.eventsCollection.add(
+      new FirstNameUpdatedEvent(this.id, this.state).getEvent
+    );
   }
 
   updateLastName(name: string) {
@@ -115,6 +117,8 @@ export class Student implements AggregateRoot<StudentState, StudentEvent> {
 
     this.state.lastName = lastName.getValue;
 
-    this.eventsCollection.add(new FirstNameUpdatedEvent(this.id, this.state));
+    this.eventsCollection.add(
+      new LastNameUpdatedEvent(this.id, this.state).getEvent
+    );
   }
 }
