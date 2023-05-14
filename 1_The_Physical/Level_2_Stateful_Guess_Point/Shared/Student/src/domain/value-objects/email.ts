@@ -1,31 +1,27 @@
 import { Result } from "../../shared/result";
 import { ValidationError } from "../../shared/validator";
-import { ValueObject } from "./value-object";
+import { AbstractValueObject, Validator } from "./abstract-value-object";
 
 interface EmailInputProps {
   firstName: string;
   lastName: string;
 }
 
-type EmailError = ValidationError | undefined;
+export class Email extends AbstractValueObject<string> {
+  static readonly pattern = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/gi;
 
-type Validator = ({
-  value,
-  pattern,
-}: {
-  value: string;
-  pattern: RegExp;
-}) => boolean;
+  static readonly errorObject = {
+    type: "INVALID_EMAIL",
+    message: `Email must match format of [name]@essentialist.dev`,
+  };
 
-export class Email implements ValueObject<string, EmailError> {
-  private pattern = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/gi;
-  private email: string;
-
-  constructor(
-    private emailProps: EmailInputProps,
-    private validator: Validator
-  ) {
-    this.email = Email.generateEmail(this.emailProps);
+  constructor(emailProps: EmailInputProps, public validator: Validator) {
+    super(
+      Email.generateEmail(emailProps),
+      validator,
+      Email.pattern,
+      Email.errorObject
+    );
   }
 
   static generateEmail({
@@ -44,28 +40,11 @@ export class Email implements ValueObject<string, EmailError> {
   static create(
     emailProps: EmailInputProps,
     validator: Validator
-  ): Result<Email, EmailError> {
+  ): Result<Email, ValidationError> {
     const email = new Email(emailProps, validator);
 
     if (email.error) return Result.fail(email.error);
 
     return Result.ok(email);
-  }
-
-  get error() {
-    const { validator, email, pattern } = this;
-
-    const isInvalid = !validator({ value: email, pattern });
-
-    if (isInvalid) {
-      return {
-        type: "INVALID_EMAIL",
-        message: `Email must match format of [name]@essentialist.dev`,
-      };
-    }
-  }
-
-  get getValue() {
-    return this.email;
   }
 }
