@@ -31,7 +31,7 @@ describe("First name", () => {
       const { error } = FirstName.create("", Validator.validator);
 
       expect(error).toEqual({
-        message: 'Invalid first name value of ""',
+        message: "First name muist be between 1 and 10 characters",
         type: "INVALID_FIRSTNAME",
       });
     });

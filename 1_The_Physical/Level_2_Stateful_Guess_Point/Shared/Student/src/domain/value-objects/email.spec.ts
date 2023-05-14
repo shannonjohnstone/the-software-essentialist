@@ -30,8 +30,7 @@ describe("Email", () => {
       );
 
       expect(error).toEqual({
-        message:
-          "Invalid email email of '@essentialist.dev', using a first name of '' and ''",
+        message: "Email must match format of [name]@essentialist.dev",
         type: "INVALID_EMAIL",
       });
     });

@@ -42,7 +42,7 @@ export class FirstName implements ValueObject<Name, FirstNameError> {
     if (isInvalid) {
       return {
         type: "INVALID_FIRSTNAME",
-        message: `Invalid first name value of "${name}"`,
+        message: `First name muist be between 1 and 10 characters`,
       };
     }
   }

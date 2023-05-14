@@ -40,11 +40,11 @@ describe("Student", () => {
         type: "FAILED_STUDENT_CREATE",
         errors: [
           {
-            message: `Invalid first name value of ""`,
+            message: "First name muist be between 1 and 10 characters",
             type: "INVALID_FIRSTNAME",
           },
           {
-            message: `Invalid last name value of ""`,
+            message: "Last name must be between 2 and 15 characters",
             type: "INVALID_LASTNAME",
           },
         ],
@@ -104,7 +104,7 @@ describe("Student", () => {
         type: "FAILED_FIRSTNAME_UPDATE",
         errors: [
           {
-            message: 'Invalid first name value of ""',
+            message: "First name muist be between 1 and 10 characters",
             type: "INVALID_FIRSTNAME",
           },
         ],
@@ -116,7 +116,7 @@ describe("Student", () => {
         type: "FAILED_LASTNAME_UPDATE",
         errors: [
           {
-            message: 'Invalid last name value of ""',
+            message: "Last name must be between 2 and 15 characters",
             type: "INVALID_LASTNAME",
           },
         ],

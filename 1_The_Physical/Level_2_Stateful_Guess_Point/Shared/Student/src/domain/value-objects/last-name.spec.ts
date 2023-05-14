@@ -32,7 +32,7 @@ describe("Last name", () => {
       const { error } = LastName.create("", Validator.validator);
 
       expect(error).toEqual({
-        message: 'Invalid last name value of ""',
+        message: "Last name must be between 2 and 15 characters",
         type: "INVALID_LASTNAME",
       });
     });
@@ -46,8 +46,7 @@ describe("Last name", () => {
       );
 
       expect(error).toEqual({
-        message:
-          'Invalid last name value of "aVeryLongLastNameThatIsOverCharacterLimit"',
+        message: "Last name must be between 2 and 15 characters",
         type: "INVALID_LASTNAME",
       });
     });

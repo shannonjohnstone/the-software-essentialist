@@ -15,7 +15,7 @@ type Validator = ({
 }) => boolean;
 
 export class LastName implements ValueObject<Name, LastNameError> {
-  private pattern = /^[a-z]{1,15}$/gi;
+  private pattern = /^[a-z]{2,15}$/gi;
 
   constructor(private name: Name, private validator: Validator) { }
 
@@ -40,7 +40,7 @@ export class LastName implements ValueObject<Name, LastNameError> {
     if (isInvalid) {
       return {
         type: "INVALID_LASTNAME",
-        message: `Invalid last name value of "${name}"`,
+        message: `Last name must be between 2 and 15 characters`,
       };
     }
   }

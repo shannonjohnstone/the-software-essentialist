@@ -60,7 +60,7 @@ export class Email implements ValueObject<string, EmailError> {
     if (isInvalid) {
       return {
         type: "INVALID_EMAIL",
-        message: `Invalid email email of '${email}', using a first name of '${this.emailProps.firstName}' and '${this.emailProps.lastName}'`,
+        message: `Email must match format of [name]@essentialist.dev`,
       };
     }
   }
