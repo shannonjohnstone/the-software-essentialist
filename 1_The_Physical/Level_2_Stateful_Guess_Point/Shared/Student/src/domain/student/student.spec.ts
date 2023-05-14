@@ -10,7 +10,7 @@ describe("Student", () => {
       };
 
       const student = Student.create(data);
-      expect(student.value).toBeInstanceOf(Student);
+      expect(student.getValue).toBeInstanceOf(Student);
     });
   });
 
@@ -23,7 +23,7 @@ describe("Student", () => {
 
       const student = Student.create(data);
 
-      expect(student.value?.getName).toEqual(
+      expect(student.getValue.getName).toEqual(
         `${data.firstName} ${data.lastName}`
       );
     });
@@ -36,18 +36,19 @@ describe("Student", () => {
         lastName: "",
       });
 
-      expect(error).toBeInstanceOf(Array);
-      expect(error).toEqual([
-        {
-          message: `Invalid first name value of ""`,
-          type: "INVALID_FIRSTNAME",
-        },
-        { message: `Invalid last name value of ""`, type: "INVALID_LASTNAME" },
-        {
-          message: `Invalid email email of '@essentialist.dev', using a first name of '' and ''`,
-          type: "INVALID_EMAIL",
-        },
-      ]);
+      expect(error).toEqual({
+        type: "FAILED_STUDENT_CREATE",
+        errors: [
+          {
+            message: `Invalid first name value of ""`,
+            type: "INVALID_FIRSTNAME",
+          },
+          {
+            message: `Invalid last name value of ""`,
+            type: "INVALID_LASTNAME",
+          },
+        ],
+      });
     });
   });
 
@@ -58,7 +59,7 @@ describe("Student", () => {
         lastName: "Smith",
       });
 
-      expect(student.value?.getEvents).toEqual([
+      expect(student.getValue.getEvents).toEqual([
         {
           data: {
             email: "smithjo@essentialist.dev",
@@ -79,14 +80,14 @@ describe("Student", () => {
         lastName: "Smith",
       });
 
-      expect(student.value?.getFirstName).toEqual("John");
-      expect(student.value?.getLastName).toEqual("Smith");
+      expect(student.getValue.getFirstName).toEqual("John");
+      expect(student.getValue.getLastName).toEqual("Smith");
 
-      student.value?.updateFirstName("Ken");
-      student.value?.updateLastName("Ward");
+      student.getValue.updateFirstName("Ken");
+      student.getValue.updateLastName("Ward");
 
-      expect(student.value?.getFirstName).toEqual("Ken");
-      expect(student.value?.getLastName).toEqual("Ward");
+      expect(student.getValue.getFirstName).toEqual("Ken");
+      expect(student.getValue.getLastName).toEqual("Ward");
     });
   });
 
@@ -97,18 +98,28 @@ describe("Student", () => {
         lastName: "Smith",
       });
 
-      const updatedFirstName = student.value?.updateFirstName("");
+      const updatedFirstName = student.getValue.updateFirstName("");
 
       expect(updatedFirstName?.error).toEqual({
-        message: 'Invalid first name value of ""',
-        type: "INVALID_FIRSTNAME",
+        type: "FAILED_FIRSTNAME_UPDATE",
+        errors: [
+          {
+            message: 'Invalid first name value of ""',
+            type: "INVALID_FIRSTNAME",
+          },
+        ],
       });
 
-      const updatedLastName = student.value?.updateLastName("");
+      const updatedLastName = student.getValue.updateLastName("");
 
       expect(updatedLastName?.error).toEqual({
-        message: 'Invalid last name value of ""',
-        type: "INVALID_LASTNAME",
+        type: "FAILED_LASTNAME_UPDATE",
+        errors: [
+          {
+            message: 'Invalid last name value of ""',
+            type: "INVALID_LASTNAME",
+          },
+        ],
       });
     });
   });

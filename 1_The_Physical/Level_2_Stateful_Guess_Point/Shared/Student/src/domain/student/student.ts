@@ -17,6 +17,11 @@ import {
   Error,
 } from "./student-types";
 
+interface StudentValidationError {
+  type: string;
+  errors: Error[];
+}
+
 export class Student implements AggregateRoot<StudentState, StudentEvent> {
   public readonly id: string;
   public readonly state: StudentState;
@@ -36,33 +41,33 @@ export class Student implements AggregateRoot<StudentState, StudentEvent> {
   static create(state: {
     firstName: string;
     lastName: string;
-  }): Result<Student, Error[]> {
+  }): Result<Student, StudentValidationError> {
     const firstName = FirstName.create(state.firstName, Validator.validator);
+
     const lastName = LastName.create(state.lastName, Validator.validator);
+
+    if (firstName.isFailure || lastName.isFailure) {
+      const errors = Validator.validate([firstName.error, lastName.error]);
+
+      return Result.fail({
+        type: "FAILED_STUDENT_CREATE",
+        errors,
+      });
+    }
 
     const email = Email.create(
       {
-        firstName: firstName.value?.getValue || "",
-        lastName: lastName.value?.getValue || "",
+        firstName: firstName.getValue.getValue,
+        lastName: lastName.getValue.getValue,
       },
       Validator.validator
     );
 
-    if (!firstName.value || !lastName.value || !email.value) {
-      const error = Validator.validate([
-        firstName.error,
-        lastName.error,
-        email.error,
-      ]);
-
-      return Result.failure(error);
-    }
-
-    return Result.success(
+    return Result.ok(
       new Student({
-        firstName: firstName.value,
-        lastName: lastName.value,
-        email: email.value,
+        firstName: firstName.getValue,
+        lastName: lastName.getValue,
+        email: email.getValue,
       })
     );
   }
@@ -86,32 +91,30 @@ export class Student implements AggregateRoot<StudentState, StudentEvent> {
   updateFirstName(name: string) {
     const firstName = this.state.firstName.update(name);
 
-    const { value, error } = firstName;
-
-    if (error) {
-      return Result.failure(error);
+    if (firstName.isFailure) {
+      return Result.fail({
+        type: "FAILED_FIRSTNAME_UPDATE",
+        errors: [firstName.error],
+      });
     }
 
-    if (value) {
-      this.state.firstName = value;
+    this.state.firstName = firstName.getValue;
 
-      this.eventsCollection.add(new LastNameUpdatedEvent(this.id, this.state));
-    }
+    this.eventsCollection.add(new LastNameUpdatedEvent(this.id, this.state));
   }
 
   updateLastName(name: string) {
     const lastName = this.state.lastName.update(name);
 
-    const { value, error } = lastName;
-
-    if (error) {
-      return Result.failure(error);
+    if (lastName.isFailure) {
+      return Result.fail({
+        type: "FAILED_LASTNAME_UPDATE",
+        errors: [lastName.error],
+      });
     }
 
-    if (value) {
-      this.state.lastName = value;
+    this.state.lastName = lastName.getValue;
 
-      this.eventsCollection.add(new FirstNameUpdatedEvent(this.id, this.state));
-    }
+    this.eventsCollection.add(new FirstNameUpdatedEvent(this.id, this.state));
   }
 }

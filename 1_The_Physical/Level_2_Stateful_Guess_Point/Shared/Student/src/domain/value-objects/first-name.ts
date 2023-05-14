@@ -25,9 +25,9 @@ export class FirstName implements ValueObject<Name, FirstNameError> {
   ): Result<FirstName, FirstNameError> {
     const firstName = new FirstName(name, validator);
 
-    if (firstName.error) return Result.failure(firstName.error);
+    if (firstName.error) return Result.fail(firstName.error);
 
-    return Result.success(firstName);
+    return Result.ok(firstName);
   }
 
   public update(name: Name) {

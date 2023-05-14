@@ -3,34 +3,33 @@ import { Result } from "./result";
 describe("Result", () => {
   describe("Given the result is valid", () => {
     it("Then returns a value", () => {
-      const result = new Result("cat");
+      const result = new Result(true, undefined, "cat");
 
-      expect(result.value).toBeTruthy();
+      expect(result.getValue).toBeTruthy();
     });
   });
 
   describe("Given the result is invalid", () => {
     it("Then returns a error", () => {
       const error = [{ type: "INVALID_ITEM", message: "This is invalid" }];
-      const result = new Result(undefined, error);
+      const result = new Result(false, error);
 
-      expect(result.value).toBeFalsy();
       expect(result.error).toEqual(error);
     });
   });
 
   describe("Given the result is valid", () => {
     it("Then success will return a value", () => {
-      const result = Result.success("cat");
+      const result = Result.ok("cat");
 
-      expect(result.value).toBeTruthy();
+      expect(result.getValue).toBeTruthy();
     });
   });
 
   describe("Given the result is invalid", () => {
     it("Then success will return error", () => {
       const error = [{ type: "INVALID_ITEM", message: "This is invalid" }];
-      const result = Result.failure(error);
+      const result = Result.fail(error);
 
       expect(result.error).toEqual(error);
     });

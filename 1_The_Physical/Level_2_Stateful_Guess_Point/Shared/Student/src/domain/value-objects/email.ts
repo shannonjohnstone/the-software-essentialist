@@ -47,8 +47,9 @@ export class Email implements ValueObject<string, EmailError> {
   ): Result<Email, EmailError> {
     const email = new Email(emailProps, validator);
 
-    if (email.error) return Result.failure(email.error);
-    return Result.success(email);
+    if (email.error) return Result.fail(email.error);
+
+    return Result.ok(email);
   }
 
   get error() {
