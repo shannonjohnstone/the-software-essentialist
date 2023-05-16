@@ -7,3 +7,11 @@ describe('Given a game is started', () => {
     expect(game).toBeInstanceOf(TicTacToe)
   })
 })
+
+describe('Given a game is started', () => {
+  it("Then is 9 spaces on the board", () => {
+    const game = TicTacToe.start()
+
+    expect(game.getBoardLength).toEqual(9)
+  })
+})
