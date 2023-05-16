@@ -33,3 +33,13 @@ describe("Given a game is started", () => {
     expect(game.getPlayerAtPostion(0)).toEqual("X");
   });
 });
+
+describe("Given player X makes a vald move", () => {
+  it("Then current player is now O", () => {
+    const game = TicTacToe.start();
+
+    game.makeMove(0);
+
+    expect(game.getCurrentPlayer).toEqual("O");
+  });
+});

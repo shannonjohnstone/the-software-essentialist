@@ -6,8 +6,8 @@ enum Players {
 type Player = `${Players}`;
 
 export class TicTacToe {
-  public board: (Player | null)[];
-  readonly currentPlayer: Player = Players.X;
+  private board: (Player | null)[];
+  private currentPlayer: Player = Players.X;
 
   constructor() {
     this.board = Array(9).fill(null);
@@ -22,6 +22,9 @@ export class TicTacToe {
 
     if (!this.board[position]) {
       this.board[position] = player;
+      this.currentPlayer = player === Players.X ? Players.O : Players.X;
+    } else {
+      // Come back to handling error
     }
   }
 
