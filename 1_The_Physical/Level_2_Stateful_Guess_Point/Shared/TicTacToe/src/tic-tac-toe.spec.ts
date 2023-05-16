@@ -12,6 +12,6 @@ describe('Given a game is started', () => {
   it("Then is 9 spaces on the board", () => {
     const game = TicTacToe.start()
 
-    expect(game.getBoardLength).toEqual(9)
+    expect(game.getAmountOfBoardSquares).toEqual(9)
   })
 })

@@ -10,7 +10,7 @@ export class TicTacToe {
     return new TicTacToe()
   }
 
-  get getBoardLength() {
+  get getAmountOfBoardSquares() {
     return this.board.length
   }
 }
