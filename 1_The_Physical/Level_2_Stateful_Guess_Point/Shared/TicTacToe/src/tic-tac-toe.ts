@@ -1,3 +1,5 @@
+import { Result } from "./result";
+
 enum Players {
   "X" = "X",
   "O" = "O",
@@ -27,13 +29,26 @@ export class TicTacToe {
     return new TicTacToe();
   }
 
-  makeMove(position: number) {
+  makeMove(
+    position: number
+  ): Result<
+    { player: Player; position: number },
+    { code: string; validations: { code: string; message: string }[] }
+  > {
     const player = this.getCurrentPlayer;
 
     if (!this.board[position]) {
       this.board[position] = player;
       this.currentPlayer = player === Players.X ? Players.O : Players.X;
+      return Result.ok({ player, position });
     }
+
+    return Result.fail({
+      code: "INVALID_MOVE",
+      validations: [
+        { code: "POSITION_TAKEN", message: "Position already taken." },
+      ],
+    });
   }
 
   get getWinner(): Player | null {

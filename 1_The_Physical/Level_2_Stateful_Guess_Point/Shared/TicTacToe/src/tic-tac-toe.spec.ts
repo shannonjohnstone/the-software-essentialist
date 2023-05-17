@@ -94,8 +94,15 @@ describe("Given player X made winning moves", () => {
       const game = TicTacToe.start();
 
       game.makeMove(0);
-      game.makeMove(0);
+      const { error } = game.makeMove(0);
 
+      expect(error?.code).toEqual("INVALID_MOVE");
+      expect(error).toEqual({
+        code: "INVALID_MOVE",
+        validations: [
+          { code: "POSITION_TAKEN", message: "Position already taken." },
+        ],
+      });
       expect(game.getCurrentPlayer).toEqual("O");
       expect(game.getPlayerAtPostion(0)).toEqual("X");
     });
