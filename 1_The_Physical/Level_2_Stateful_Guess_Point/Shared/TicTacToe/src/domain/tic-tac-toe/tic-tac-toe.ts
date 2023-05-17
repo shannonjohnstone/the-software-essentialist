@@ -7,6 +7,10 @@ enum Players {
 
 type Player = `${Players}`;
 
+interface Error {
+  code: string;
+  validations: { code: string; message: string }[];
+}
 export class TicTacToe {
   private board: (Player | null)[];
   private currentPlayer: Player = Players.X;
@@ -29,16 +33,9 @@ export class TicTacToe {
     return new TicTacToe();
   }
 
-  makeMove(
-    position: number
-  ): Result<
-    { player: Player; position: number },
-    { code: string; validations: { code: string; message: string }[] }
-  > {
-    const player = this.getCurrentPlayer;
-
+  validate(position: number): Error | undefined {
     if (position < 0 || position > this.board.length) {
-      return Result.fail({
+      return {
         code: "INVALID_MOVE",
         validations: [
           {
@@ -46,21 +43,36 @@ export class TicTacToe {
             message: "Position is outside the range of the current board.",
           },
         ],
-      });
+      };
     }
 
-    if (!this.board[position]) {
-      this.board[position] = player;
-      this.currentPlayer = player === Players.X ? Players.O : Players.X;
-      return Result.ok({ player, position });
+    if (this.board[position]) {
+      return {
+        code: "INVALID_MOVE",
+        validations: [
+          { code: "POSITION_TAKEN", message: "Position already taken." },
+        ],
+      };
+    }
+  }
+
+  makeMove(
+    position: number
+  ): Result<{ player: Player; position: number }, Error> {
+    const player = this.getCurrentPlayer;
+    const error = this.validate(position);
+
+    if (error) {
+      return Result.fail(error);
     }
 
-    return Result.fail({
-      code: "INVALID_MOVE",
-      validations: [
-        { code: "POSITION_TAKEN", message: "Position already taken." },
-      ],
-    });
+    this.board[position] = player;
+    this.currentPlayer = player === Players.X ? Players.O : Players.X;
+    return Result.ok({ player, position });
+  }
+
+  getPlayerAtPostion(position: number) {
+    return this.board[position];
   }
 
   get getWinner(): Player | null {
@@ -96,9 +108,5 @@ export class TicTacToe {
 
   get getCurrentPlayer() {
     return this.currentPlayer;
-  }
-
-  getPlayerAtPostion(position: number) {
-    return this.board[position];
   }
 }
