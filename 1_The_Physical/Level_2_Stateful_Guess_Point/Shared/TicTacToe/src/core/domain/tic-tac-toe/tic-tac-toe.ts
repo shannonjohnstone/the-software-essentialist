@@ -1,4 +1,4 @@
-import { Result } from "../../shared/result";
+import { Result } from "../../../shared/result";
 
 enum Players {
   "X" = "X",

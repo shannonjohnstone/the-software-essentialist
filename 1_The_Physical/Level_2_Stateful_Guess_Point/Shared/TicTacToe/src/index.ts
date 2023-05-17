@@ -1,3 +1,5 @@
-import { TicTacToeCli } from "./infra/tic-tac-toe-cli";
+import { playTicTacToe } from "./core/infra/cli/tic-tac-toe";
 
-TicTacToeCli.start();
+(async () => {
+  await playTicTacToe.execute();
+})();

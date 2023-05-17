@@ -1,4 +1,3 @@
-import exp from "constants";
 import { TicTacToe } from "./tic-tac-toe";
 
 describe("Given a game is started", () => {
