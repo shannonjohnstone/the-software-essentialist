@@ -33,8 +33,6 @@ export class TicTacToe {
     if (!this.board[position]) {
       this.board[position] = player;
       this.currentPlayer = player === Players.X ? Players.O : Players.X;
-    } else {
-      // Come back to handling error
     }
   }
 

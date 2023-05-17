@@ -88,4 +88,16 @@ describe("Given player X made winning moves", () => {
       expect(game.gameStatus).toEqual({ isOver: true });
     });
   });
+
+  describe("Given player O tried to make a move in a position already taken", () => {
+    it("Then this would be considered an invalid move", () => {
+      const game = TicTacToe.start();
+
+      game.makeMove(0);
+      game.makeMove(0);
+
+      expect(game.getCurrentPlayer).toEqual("O");
+      expect(game.getPlayerAtPostion(0)).toEqual("X");
+    });
+  });
 });
