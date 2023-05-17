@@ -37,6 +37,18 @@ export class TicTacToe {
   > {
     const player = this.getCurrentPlayer;
 
+    if (position < 0 || position > this.board.length) {
+      return Result.fail({
+        code: "INVALID_MOVE",
+        validations: [
+          {
+            code: "POSITION_OUTSIDE_BOARD_RANGE",
+            message: "Position is outside the range of the current board.",
+          },
+        ],
+      });
+    }
+
     if (!this.board[position]) {
       this.board[position] = player;
       this.currentPlayer = player === Players.X ? Players.O : Players.X;
