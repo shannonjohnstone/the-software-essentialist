@@ -48,6 +48,7 @@
     "typescript": "^4.7.4"
   },
   "dependencies": {
-    "jest-cucumber": "^3.0.1"
+    "jest-cucumber": "^3.0.1",
+    "readline": "^1.3.0"
   }
 }
