@@ -11,6 +11,7 @@ interface Error {
   code: string;
   validations: { code: string; message: string }[];
 }
+
 export class TicTacToe {
   private board: (Player | null)[];
   private currentPlayer: Player = Players.X;
@@ -80,8 +81,8 @@ export class TicTacToe {
       const firstPosition = this.board[a];
       if (
         firstPosition &&
-        this.board[a] === this.board[b] &&
-        this.board[a] === this.board[c]
+        firstPosition === this.board[b] &&
+        firstPosition === this.board[c]
       ) {
         return this.board[a];
       }
@@ -90,11 +91,11 @@ export class TicTacToe {
     return null;
   }
 
-  get getGameStatus(): { isOver: boolean; player?: Player } {
+  get getGameStatus(): { isOver: boolean; winner?: Player } {
     const allPositionsTaken = !this.board.includes(null);
 
     if (this.getWinner) {
-      return { isOver: true, player: this.getWinner };
+      return { isOver: true, winner: this.getWinner };
     }
 
     return allPositionsTaken && !this.getWinner

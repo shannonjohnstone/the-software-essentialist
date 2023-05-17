@@ -29,9 +29,9 @@ export class TicTacToeCli {
       }
 
       if (game.getGameStatus.isOver) {
-        const { player } = game.getGameStatus;
-        if (player) {
-          console.log(`Player ${player} is the winner`);
+        const { winner } = game.getGameStatus;
+        if (winner) {
+          console.log(`Player ${winner} is the winner`);
         } else {
           console.log("Try again, its a tie!");
         }
